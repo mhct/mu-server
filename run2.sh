@@ -23,7 +23,7 @@ INTERVAL=120
 
 
 function slideshow {
-	fbi -T 1 -noverbose -m 1920x1080 -a -t $INTERVAL $SHOW_PHOTOS_DIR/* &
+	fbi -T 1 -noverbose -m 1920x1080 -a -t $(($INTERVAL/$(ls -1 $SHOW_PHOTOS_DIR/*|wc -l))) $SHOW_PHOTOS_DIR/* &
 	#fim -q $SHOW_PHOTOS_DIR/* &
 	log "Starting new slideshow"
 }
@@ -38,7 +38,7 @@ do
 	python imap_client.py
 	temp=$(ls -1 $PHOTOS_DIR | wc -l)
 	if [ $temp -gt 0 ];then
-		rm $SHOW_PHOTOS_DIR/*
+		#rm $SHOW_PHOTOS_DIR/*
 		mv $PHOTOS_DIR/* $SHOW_PHOTOS_DIR/
 		killall fbi 
 		slideshow
