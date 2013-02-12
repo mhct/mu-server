@@ -57,13 +57,14 @@ if  len(id_list) > 0:
         raw_email = data[0][1]
         email_instance = email.message_from_string(raw_email)
 
-        if persist_image(photos_dir, email_instance):
-                os.environ["NEW_SLIDESHOW"] = "1"
-        #else:
-        os.environ["NEW_SLIDESHOW"] = "0"
+	if persist_image(photos_dir, email_instance):
+                os.putenv("NEW_SLIDESHOW", "1")
+        else:
+                os.putenv("NEW_SLIDESHOW", "0")
 
         #print("email dani")
 
         #print(raw_email)
 else:
         print("No email found")
+
