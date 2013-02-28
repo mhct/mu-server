@@ -9,7 +9,6 @@ Picture frame
 
 LINUX configurations
 ====================
-- add run2.sh to be loaded by .profile
 - change inittab for automatic login on user pi
   1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1
 
