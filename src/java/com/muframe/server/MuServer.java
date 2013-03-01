@@ -7,14 +7,14 @@ import org.apache.commons.configuration.EnvironmentConfiguration;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
-import com.muframe.connectors.SMTPConnectorTest;
+import com.muframe.connectors.SMTPConnector;
 
-public class MuServer {
+public class MuServer implements Runnable {
 	private static final Configuration config = new EnvironmentConfiguration();
 	
 	private static final String DB_SERVER_IP = config.getString("DB_SERVER_IP", "127.0.0.1");
 	private static final Integer DB_SERVER_PORT = config.getInteger("DB_SERVER_PORT", 27017);
-	private static final long SLEEPING_TIME = 60000;
+	private static final long SLEEPING_TIME = 6000000;
 
 	private DB db;
 	private ServerConnector connector;
@@ -42,14 +42,15 @@ public class MuServer {
 		this.connector = connector;
 	}
 	
-	public static MuServer getInstance(DB db, ServerConnector connector) {
-		return new MuServer(db, connector);
+	public static Thread getInstance(DB db, ServerConnector connector) {
+		return new Thread(new MuServer(db, connector));
 	}
 	
 	public static void main(String[] args) throws UnknownHostException {
 		MongoClient dbClient = new MongoClient(DB_SERVER_IP, DB_SERVER_PORT);
 		DB db = dbClient.getDB("muphotos");
 				
-//		MuServer server = MuServer.getInstance(db, SMTPConnectorTest.getInstance(db));
+		Thread server = MuServer.getInstance(db, SMTPConnector.getInstance(db));
+		server.start();
 	}
 }

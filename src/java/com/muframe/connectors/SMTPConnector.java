@@ -1,7 +1,9 @@
 package com.muframe.connectors;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import javax.activation.CommandInfo;
@@ -14,8 +16,10 @@ import javax.mail.Store;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.search.SubjectTerm;
 
+import org.bson.types.Binary;
 import org.mockito.Mockito;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.muframe.server.ServerConnector;
 
@@ -79,6 +83,9 @@ public class SMTPConnector implements ServerConnector {
 	        				continue;
 	        			}
 	        			((MimeBodyPart) mp.getBodyPart(i)).saveFile(new File("/tmp/isa.jpg"));
+	        			//TODO check how to persist the data on the database
+	        			//another option is to simply add the path to the file?
+	        			savePhoto( ((MimeBodyPart) mp.getBodyPart(i)).getInputStream() );
 	        		}
 		        }
 	        }
@@ -91,6 +98,26 @@ public class SMTPConnector implements ServerConnector {
 
 	}
 	
+	private void savePhoto(InputStream in) throws IOException {
+		int bufferSize = 1024 * 512; // Average picture size
+		byte[] buffer = new byte[8192];
+		ByteArrayOutputStream out = new ByteArrayOutputStream(bufferSize);
+		
+		try {
+			int len;
+			while ((len = in.read(buffer)) > 0) {
+				out.write(buffer);
+			}
+			Binary b = new Binary(out.toByteArray());
+			db.getCollection("photos").insert(new BasicDBObject("photoID", b));
+			
+		} catch (IOException e) {
+			throw new IOException(e);
+		} finally {
+			out.close();
+		}
+	}
+
 	public static void main(String[] args) {
 		SMTPConnector s = SMTPConnector.getInstance(Mockito.mock(DB.class));
 		s.retrievePhotos();
