@@ -1,11 +1,21 @@
 package com.muframe.server;
 
+import java.io.InputStream;
+
 /**
- * Provides a interface for persisting and retrieving files from the secondary storage
+ * Storage Service for photos, text, etc.
+ * The main goal of this interface is to abstract away from the particular implementations of storages available, 
+ * such as files, databases, etc.
  * 
  * @author mariohct
  *
  */
-public class StorageService {
+public interface StorageService {
 	
+	/**
+	 * Persists the data coming from a InputStream
+	 * 
+	 * @param in Data to be persisted
+	 */
+	public void persist(InputStream in);
 }

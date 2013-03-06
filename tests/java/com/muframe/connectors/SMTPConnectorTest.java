@@ -3,7 +3,7 @@ package com.muframe.connectors;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.mongodb.DB;
+import com.muframe.server.StorageService;
 
 /**
  * Connects to SMTP server an retrieve photos
@@ -15,7 +15,7 @@ public class SMTPConnectorTest {
 	
 	@Test
 	public void connectGmail() {
-		SMTPConnector conn = new SMTPConnector(Mockito.mock(DB.class));
+		IMAPConnector conn = IMAPConnector.getInstance(Mockito.mock(StorageService.class));
 		conn.retrievePhotos();
 	}
 }
