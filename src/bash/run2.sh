@@ -14,19 +14,14 @@
 # email_user@gmail.com:password
 #
 LOG_FILE="./mulog.txt"
-export EMAIL_ACCOUNT=$(cut -f 1 -d : secret.txt)
-export EMAIL_PASSWORD=$(cut -f 2 -d : secret.txt)
-export PHOTOS_DIR="/home/pi/mu-photos/raw_photos"
+#export EMAIL_ACCOUNT=$(cut -f 1 -d : secret.txt)
+#export EMAIL_PASSWORD=$(cut -f 2 -d : secret.txt)
+export PHOTOS_DIR="/home/pi/mu-server/raw_photos"
 
-SHOW_PHOTOS_DIR="/home/pi/mu-photos/show_photos"
+SHOW_PHOTOS_DIR="/home/pi/mu-server/show_photos"
 INTERVAL=120
 
 
-function slideshow {
-	fbi -T 1 -noverbose -m 1920x1080 -a -t $(($INTERVAL/$(ls -1 $SHOW_PHOTOS_DIR/*|wc -l))) $SHOW_PHOTOS_DIR/* &
-	#fim -q $SHOW_PHOTOS_DIR/* &
-	log "Starting new slideshow"
-}
 
 function log {
 	echo $(date) $1 >> $LOG_FILE
@@ -40,8 +35,8 @@ do
 	if [ $temp -gt 0 ];then
 		#rm $SHOW_PHOTOS_DIR/*
 		mv $PHOTOS_DIR/* $SHOW_PHOTOS_DIR/
-		killall fbi 
-		slideshow
+		killall fbi
+		fbi -T 1 -noverbose -m 1920x1080 -a  $SHOW_PHOTOS_DIR/* &
 	fi
 	sleep $INTERVAL
 done

@@ -30,12 +30,12 @@ import com.muframe.server.UUIDGenerator;
 public class IMAPConnector implements ServerConnector {
 	private static final Logger logger = Logger.getLogger(IMAPConnector.class);
 	
-//	private static final String IMAP_SERVER = "imap.gmail.com";
-//	private static final String USERNAME = "firstuser.of.muphoto1@gmail.com";
-//	private static final String PASSWORD = "pass_for_mu";
-	private static final String IMAP_SERVER = "127.0.0.1";
-	private static final String USERNAME = "pi";
-	private static final String PASSWORD = "donottrytoblueme";
+	private static final String IMAP_SERVER = "imap.gmail.com";
+	private static final String USERNAME = "firstuser.of.muphoto1@gmail.com";
+	private static final String PASSWORD = "pass_for_mu";
+//	private static final String IMAP_SERVER = "127.0.0.1";
+//	private static final String USERNAME = "pi";
+//	private static final String PASSWORD = "donottrytoblueme";
 	
 	private StorageService storageService;
 
@@ -82,13 +82,13 @@ public class IMAPConnector implements ServerConnector {
 
 	    try {
 		    Properties props = new Properties();
-//		    props.put("mail.store.protocol", "imaps");
-		    props.put("mail.store.protocol", "imap");
+		    props.put("mail.store.protocol", "imaps");
+//		    props.put("mail.store.protocol", "imap"); //USED for local tests
 		    Session session = Session.getDefaultInstance(props);
 	
 		    session.setDebug(debug);
-//		    Store store = session.getStore("imaps");
-		    Store store = session.getStore("imap");
+		    Store store = session.getStore("imaps");
+//		    Store store = session.getStore("imap"); //used for local tests
 		    store.connect(IMAP_SERVER, USERNAME, PASSWORD);
 		    
 		    Folder inbox = store.getFolder("Inbox");

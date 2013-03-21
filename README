@@ -25,5 +25,5 @@ LINUX configurations
 
 DEPENDENCIES
 ============
-- fbi
+- execute the script install.sh to get all dependencies
 
