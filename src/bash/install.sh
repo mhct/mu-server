@@ -11,7 +11,7 @@
 # Fetching dependencies
 #
 sudo apt-get update
-sudo apt-get install fbi netatalk openjdk-7-jdk inotify-tools
+sudo apt-get install vim fim fbi netatalk openjdk-7-jdk inotify-tools
 
 
 #

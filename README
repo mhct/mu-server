@@ -17,7 +17,7 @@ LINUX configurations
         #
         # run mu-photos
         #
-        cd /home/pi/mu-photos
+        cd /home/pi/mu-server
         bash run2.sh
 - install the software on a folder /home/pi/mu-photos
 

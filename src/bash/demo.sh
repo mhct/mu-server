@@ -26,6 +26,7 @@ do
 	log "checking new pictures"
 	file=${RES#?*CREATE }
 	log "filename: "$file
+	sleep 45
 	killall fbi
 	fbi -T 1 -noverbose -m 1920x1080 -a $PHOTOS_FOLDER/$file &
 	log "showing new picture"	

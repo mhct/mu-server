@@ -15,7 +15,7 @@ public class MuServer implements Runnable {
 	
 	private static final String DB_SERVER_IP = config.getString("DB_SERVER_IP", "127.0.0.1");
 	private static final Integer DB_SERVER_PORT = config.getInteger("DB_SERVER_PORT", 27017);
-	public static final String PHOTOS_FOLDER = config.getString("PHOTOS_FOLDER", "/home/pi/mu-photos/show_photos/");
+	public static final String PHOTOS_FOLDER = config.getString("PHOTOS_FOLDER", "/home/pi/mu-server/show_photos/");
 	
 	private static final long SLEEPING_TIME = 60000; //miliseconds
 
