@@ -27,3 +27,8 @@ DEPENDENCIES
 ============
 - execute the script install.sh to get all dependencies
 
+
+HARDWARE
+========
+Rpi GPIO is configured using BCM
+PIR sensor is connected at pin 7 of the raspberry pi
