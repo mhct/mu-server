@@ -74,9 +74,11 @@ public class IMAPConnector implements ServerConnector {
 	}
 	
 	@Override
-	public void retrievePhotos() {
+	public File retrievePhotos() {
 		logger.debug("Retrieving photos from IMAP server");
 		logger.debug("IMAP server: " + IMAP_SERVER + "\tusername: " + USERNAME);
+		
+		File photo = null;
 		
 	    boolean debug = false;
 
@@ -95,6 +97,7 @@ public class IMAPConnector implements ServerConnector {
 	        inbox.open(Folder.READ_WRITE);
 	        
 	        for (Message msg:inbox.search(getSearchQuery())) {
+	        	logger.debug("Found new photo");
 	        	
 	        	if (msg.getContentType().contains("multipart")) {
 	        		Multipart mp = (Multipart) msg.getContent();
@@ -105,7 +108,10 @@ public class IMAPConnector implements ServerConnector {
 	        			if (mp.getBodyPart(i).getContentType().contains("Multipart")) {
 	        				continue;
 	        			}
-	        			((MimeBodyPart) mp.getBodyPart(i)).saveFile(new File(MuServer.PHOTOS_FOLDER + UUIDGenerator.getInstance().getId() + ".jpg"));
+	        			
+	        			//TODO identify the file type... running image magick, for example.... to avoid any security attacks, etc.
+	        			photo = new File(MuServer.PHOTOS_FOLDER + UUIDGenerator.getInstance().getId() + ".jpg");
+	        			((MimeBodyPart) mp.getBodyPart(i)).saveFile(photo);
 //	        			storageService.persist(((MimeBodyPart) mp.getBodyPart(i)).getInputStream());
 	        			
 	        		}
@@ -117,7 +123,7 @@ public class IMAPConnector implements ServerConnector {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	    return photo;
 	}
 	
 //	private void savePhoto(InputStream in) throws IOException {

@@ -1,5 +1,7 @@
 package com.muframe.server;
 
+import java.io.File;
+
 /**
  * Connect to services which provide the photos to be used by the mu-server
  * 
@@ -8,5 +10,5 @@ package com.muframe.server;
  */
 public interface ServerConnector {
 
-	void retrievePhotos();
+	File retrievePhotos();
 }
