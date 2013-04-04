@@ -1,12 +1,11 @@
 package com.muframe.server;
 
-import com.pi4j.io.gpio.Gpio;
+import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.event.GpioListener;
-import com.pi4j.io.gpio.event.GpioPinStateChangeEvent;
-import com.pi4j.io.gpio.impl.GpioControllerImpl;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 public class PIRSensor {
 	public PIRSensor() {
@@ -44,12 +43,12 @@ public class PIRSensor {
 	}
 	
 	public static void main(String[] args) throws InterruptedException {
-		final Gpio gpio = GpioFactory.createInstance();
-		GpioPin myButton = gpio.provisionInputPin(Pin.GPIO_06, "pin7");
-		myButton.addListener(new GpioListener() {
-			
+		final GpioController gpio = GpioFactory.getInstance();
+		GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, "pin22");
+		myButton.addListener(new GpioPinListenerDigital() {
+
 			@Override
-			public void pinStateChanged(GpioPinStateChangeEvent event) {
+			public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 				System.out.println(" ---> GPIO state changed " + event.getPin() + ", state: " + event.getState());
 			}
 		});
