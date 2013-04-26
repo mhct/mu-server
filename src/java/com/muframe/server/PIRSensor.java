@@ -1,5 +1,9 @@
 package com.muframe.server;
 
+import java.io.File;
+
+import org.apache.log4j.Logger;
+
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
@@ -7,8 +11,63 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
-public class PIRSensor {
-	public PIRSensor() {
+public class PIRSensor implements Runnable {
+	private static final Logger logger = Logger.getLogger(PIRSensor.class);
+
+	private static final long TIME_TO_TURN_OFF = 120000; // 2 minutes TODO configuration file?!
+	
+	private final long  SLEEPING_TIME = 1000; //1 second
+
+	private final PhotosDisplay display;
+
+	private int passedTime;
+
+	private PIRSensor(final PhotosDisplay display) {
+		this.display = display;
+		
+		final GpioController gpio = GpioFactory.getInstance();
+		GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, "pin22");
+		myButton.addListener(new GpioPinListenerDigital() {
+
+			@Override
+			public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+				System.out.println(" ---> GPIO " + event.getPin() + " state changed: " + event.getState());
+				logger.debug(" ---> GPIO " + event.getPin() + " state changed: " + event.getState());
+				logger.debug(" turning on screen");
+//				display.redisplayCurrentPhoto();
+				display.on();
+				passedTime = 0;
+			}
+		});
+	}
+	
+	public static PIRSensor getInstance(PhotosDisplay display) {
+		PIRSensor pir = new PIRSensor(display);
+		Thread thread = new Thread(pir);
+		thread.start();
+		
+		return pir;
+	}
+	
+	@Override
+	public void run() {
+		passedTime = 0;
+		for(;;) {
+			passedTime += SLEEPING_TIME;
+			if ((passedTime - TIME_TO_TURN_OFF) == 0) {
+				System.out.println("Turning off screen");
+				logger.debug("Turning off screen");
+				display.off();
+				passedTime = 0;
+			}
+			try {
+				Thread.sleep(SLEEPING_TIME);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 //		screen_on = True
 //				timeout = 60
 //				detected_person_at = time()
@@ -40,21 +99,33 @@ public class PIRSensor {
 //		GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02,             // PIN NUMBER
 //                "MyButton",
 
-	}
 	
 	public static void main(String[] args) throws InterruptedException {
-		final GpioController gpio = GpioFactory.getInstance();
-		GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, "pin22");
-		myButton.addListener(new GpioPinListenerDigital() {
+		PIRSensor s = PIRSensor.getInstance(new MyDisplay());
+	}
+}
 
-			@Override
-			public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-				System.out.println(" ---> GPIO state changed " + event.getPin() + ", state: " + event.getState());
-			}
-		});
+class MyDisplay implements PhotosDisplay {
+	public MyDisplay() {
+	}
+
+	public void on() {
+		System.out.println("ON: called");
+	}
+	
+	public void off() {
+		System.out.println("OFF: called");
+	}
+
+	@Override
+	public void showPhoto(File photo) {
+		// TODO Auto-generated method stub
 		
-		for(;;) {
-			Thread.sleep(1000);
-		}
+	}
+
+	@Override
+	public void redisplayCurrentPhoto() {
+		// TODO Auto-generated method stub
+		
 	}
 }

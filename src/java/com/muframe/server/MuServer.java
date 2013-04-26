@@ -65,7 +65,8 @@ public class MuServer implements Runnable {
 //		MongoClient dbClient = new MongoClient(DB_SERVER_IP, DB_SERVER_PORT);
 //		DB db = dbClient.getDB("muphotos");
 		
-		PhotosDisplay display = PhotosDisplay.getInstance();
+		PhotosDisplay display = FBIPhotosDisplay.getInstance();
+		PIRSensor pir = PIRSensor.getInstance(display);
 		
 		Thread server = MuServer.getInstance(Mockito.mock(DB.class), IMAPConnector.getInstance(FileStorageService.getInstance(UUIDGenerator.getInstance(), PHOTOS_FOLDER)), display);
 		server.start();
