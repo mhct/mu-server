@@ -16,36 +16,52 @@ public class FBIPhotosDisplay implements Runnable, PhotosDisplay {
 
 	private boolean displayOn;
 
-	FBIPhotosDisplay() {
-//		try {
-//			Runtime.getRuntime().exec("/usr/bin/tvservice -p");
-			displayOn = true; //TODO check result from process
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+	private FBIService service;
+
+	private boolean shouldTurnScreenOn = false;
+
+	private boolean shouldTurnScreenOff = false;
+
+	FBIPhotosDisplay(FBIService service) {
+		this.service = service;
+		displayOn = true;
 	}
 	
-	public static FBIPhotosDisplay getInstance() {
-		FBIPhotosDisplay display = new FBIPhotosDisplay();
+	public static PhotosDisplay getInstance() {
+		FBIPhotosDisplay display = new FBIPhotosDisplay(new FBIService());
 		Thread thread = new Thread(display);
 		thread.start();
 		
-		return display;
+		return (PhotosDisplay) display;
 	}
 	
 	@Override
 	public void run() {
 		for(;;) {
-			if ( newPhoto != null && showNewPhoto){
-				logger.debug("Received new photo do be displayed");
-				try {
-					killCurrentPhoto();
-					showNewPhoto();
-				} catch (IOException e) {
-					e.printStackTrace();
+			try {
+				if (shouldTurnScreenOn && displayOn == false) {
+					shouldTurnScreenOn = false;
+					displayOn = true;
+					service.turnDisplayOn();
+					redisplayCurrentPhoto();
 				}
+				if (shouldTurnScreenOff && displayOn == true) {
+					shouldTurnScreenOff = false;
+					displayOn = false;
+					service.turnDisplayOff();
+				}
+			
+				if ( newPhoto != null && showNewPhoto){
+//				logger.debug("Received new photo do be displayed");
+					System.out.println("\nReceived new photo do be displayed");
+						killCurrentPhoto();
+						showNewPhoto();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+			
+			//sleeping block
 			try {
 				Thread.sleep(SLEEPING_TIME);
 			} catch (InterruptedException e) {
@@ -55,16 +71,18 @@ public class FBIPhotosDisplay implements Runnable, PhotosDisplay {
 	}
 	
 	private void showNewPhoto() throws IOException {
-		logger.debug("Loading new fbi process");
+//		logger.debug("Loading new fbi process");
+		System.out.println("Loading new fbi process");
 		currentPhoto = newPhoto;
 		newPhoto = null;
 		showNewPhoto = false;
-		Runtime.getRuntime().exec("/usr/bin/fbi -T 1 -noverbose -m 1920x1080 -a " + currentPhoto.getAbsolutePath() + " &");
+		service.runFbi(currentPhoto);
 	}
 
 	private void killCurrentPhoto() throws IOException {
-		logger.debug("Killing current FBI process");
-		Runtime.getRuntime().exec("/usr/bin/killall fbi");
+		System.out.println("Killing current FBI process");
+//		logger.debug("Killing current FBI process");
+		service.stopFbi();
 	}
 
 	public void showPhoto(File photo) {
@@ -75,31 +93,20 @@ public class FBIPhotosDisplay implements Runnable, PhotosDisplay {
 	}
 	
 	public void redisplayCurrentPhoto() {
-		showPhoto(currentPhoto);
+		if (currentPhoto != null) {
+			showPhoto(currentPhoto);
+		}
 	}
 
 	public void on() {
-		try {
-			if (!displayOn) { 
-				Runtime.getRuntime().exec("/usr/bin/tvservice -p");
-				displayOn = true;
-				redisplayCurrentPhoto();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		synchronized(this){
+			shouldTurnScreenOn = true;
 		}
 	}
 
 	public void off() {
-		try {
-			if (displayOn) {
-				Runtime.getRuntime().exec("/usr/bin/tvservice -o");
-				displayOn = false;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		synchronized(this) {
+			shouldTurnScreenOff = true;
 		}
 	}
 	

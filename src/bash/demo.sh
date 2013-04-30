@@ -18,19 +18,19 @@ function log {
 }
 
 cd bin/
-java -cp mu-server.jar com.muframe.server.MuServer &
+java -cp mu-server.jar:/opt/pi4j/lib/* com.muframe.server.MuServer &
 cd ../
 
-while RES=$(inotifywait -e create $PHOTOS_FOLDER);
-do
-	log "checking new pictures"
-	file=${RES#?*CREATE }
-	log "filename: "$file
-	sleep 45
-	killall fbi
-	fbi -T 1 -noverbose -m 1920x1080 -a $PHOTOS_FOLDER/$file &
-	log "showing new picture"	
-done
+#while RES=$(inotifywait -e create $PHOTOS_FOLDER);
+#do
+#	log "checking new pictures"
+#	file=${RES#?*CREATE }
+#	log "filename: "$file
+#	sleep 45
+#	killall fbi
+#	fbi -T 1 -noverbose -m 1920x1080 -a $PHOTOS_FOLDER/$file &
+#	log "showing new picture"	
+#done
 
 
 

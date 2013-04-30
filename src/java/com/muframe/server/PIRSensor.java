@@ -33,7 +33,6 @@ public class PIRSensor implements Runnable {
 			public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
 				System.out.println(" ---> GPIO " + event.getPin() + " state changed: " + event.getState());
 				logger.debug(" ---> GPIO " + event.getPin() + " state changed: " + event.getState());
-				logger.debug(" turning on screen");
 //				display.redisplayCurrentPhoto();
 				display.on();
 				passedTime = 0;

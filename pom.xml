@@ -3,6 +3,14 @@
   <groupId>mu-server</groupId>
   <artifactId>mu-server</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
+  <distributionManagement>
+    <repository>
+      <id>ssh-repository</id>
+      <url>scp://pi@raspberrypi.local/home/pi/</url>
+    </repository>
+  </distributionManagement>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -15,24 +23,38 @@
         </configuration>
       </plugin>
       
-     <plugin>
-    <artifactId>maven-assembly-plugin</artifactId>
-    <executions>
-      <execution>
-        <phase>package</phase>
-        <goals>
-          <goal>single</goal>
-        </goals>
-      </execution>
-    </executions>
-    <configuration>
-      <descriptorRefs>
-        <descriptorRef>jar-with-dependencies</descriptorRef>
-      </descriptorRefs>
-    </configuration>
-  </plugin>
-  
-    </plugins>
+  		<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+                <artifactSet>
+	                <excludes>
+	                  <exclude>com.pi4j:pi4j-native:so:hard-float</exclude>
+	                  <exclude>com.pi4j:pi4j-native:so:soft-float</exclude>
+	                </excludes>
+                </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+	</plugins>
+	
+        <extensions>
+        <extension>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-ssh</artifactId>
+            <version>2.4</version>
+        </extension>
+    </extensions>
+    
   </build>
   <repositories>
 	<repository>
