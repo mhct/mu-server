@@ -12,7 +12,7 @@
 #
 sudo apt-get update
 sudo apt-get install vim fim fbi netatalk openjdk-7-jdk inotify-tools python-setuptools
-sudo easy_install pip
+sudo easy_install pip xterm x11-xserver-utils
 
 
 #

@@ -37,6 +37,7 @@ public class MuServer implements Runnable {
 			File photo = null;
 			if ( (photo = connector.retrievePhotos()) != null){
 				logger.debug("New photo: " + photo.getAbsolutePath());
+				System.out.println("PEGOU FOTO NOVA");
 				display.showPhoto(photo);
 			}
 			try {
@@ -65,7 +66,8 @@ public class MuServer implements Runnable {
 //		MongoClient dbClient = new MongoClient(DB_SERVER_IP, DB_SERVER_PORT);
 //		DB db = dbClient.getDB("muphotos");
 		
-		PhotosDisplay display = FBIPhotosDisplay.getInstance();
+//		PhotosDisplay display = FBIPhotosDisplay.getInstance();
+		PhotosDisplay display = SwingPhotosDisplay.getInstance();
 //		PIRSensor pir = PIRSensor.getInstance(display);
 		
 		Thread server = MuServer.getInstance(Mockito.mock(DB.class), IMAPConnector.getInstance(FileStorageService.getInstance(UUIDGenerator.getInstance(), PHOTOS_FOLDER)), display);
