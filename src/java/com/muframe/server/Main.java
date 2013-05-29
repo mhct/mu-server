@@ -21,7 +21,7 @@ public class Main {
 			file = args[0];
 		}
 		else {
-			file = "/tmp/foto.jpg";
+			file = "/home/pi/mu-server/foto.jpg";
 		}
 		
 		final JFrame frame = new ImageFrame("teste", file);

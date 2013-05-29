@@ -1,5 +1,6 @@
 package com.muframe.server;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -21,6 +22,7 @@ import javax.swing.SwingUtilities;
 
 public class SwingPhotosDisplay implements PhotosDisplay, Runnable {
 
+	//FOR simple testing purposes.. TODO create unit test for this code
 	public static void main(String[] args) throws InterruptedException {
 		SwingPhotosDisplay spd = new SwingPhotosDisplay();
 		Thread t = new Thread(spd);
@@ -174,9 +176,9 @@ class PD extends JPanel {
 	
 	public PD() {
 		try {
-			File logo = new File("/tmp/logo.jpg");
+			File logo = new File(MuServer.PHOTOS_FOLDER + "/logo.png");
 			if (logo.exists()) {
-				image = ImageIO.read(new File("/tmp/logo.jpg"));
+				image = ImageIO.read(logo);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -188,7 +190,9 @@ class PD extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if(image != null) {
-			g.drawImage(image, 0, 0, null);
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, 1920, 1080);
+			g.drawImage(image, 20, 20, null);
 		}
 	}
 }

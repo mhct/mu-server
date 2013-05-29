@@ -20,6 +20,8 @@ import com.muframe.server.MuServer;
 import com.muframe.server.ServerConnector;
 import com.muframe.server.StorageService;
 import com.muframe.server.UUIDGenerator;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 /**
  * Connects to SMTP server an retrieve photos
@@ -30,10 +32,18 @@ import com.muframe.server.UUIDGenerator;
 public class IMAPConnector implements ServerConnector {
 	private static final Logger logger = Logger.getLogger(IMAPConnector.class);
 	
-	private static final String IMAP_SERVER = "imap.gmail.com";
-	private static final String USERNAME = "firstuser.of.muphoto1@gmail.com";
-	private static final String PASSWORD = "pass_for_mu";
-//	private static final String IMAP_SERVER = "127.0.0.1";
+	private final Config config = ConfigFactory.load();
+
+	private final String IMAP_SERVER = config.getString("mu-server.imap-connector.imap-server");
+	private final String USERNAME = config.getString("mu-server.imap-connector.username");
+	private final String PASSWORD = config.getString("mu-server.imap-connector.password");
+		
+	
+//	private final String IMAP_SERVER = "imap.rgc.be"; 
+//	private final String USERNAME = "" 
+//	private final String PASSWORD = 
+
+	//	private static final String IMAP_SERVER = "127.0.0.1";
 //	private static final String USERNAME = "pi";
 //	private static final String PASSWORD = "donottrytoblueme";
 	
@@ -41,6 +51,7 @@ public class IMAPConnector implements ServerConnector {
 
 	public IMAPConnector(StorageService storageService) {
 		this.storageService = storageService;
+		
 	}
 
 	public static IMAPConnector getInstance(StorageService storageService) {

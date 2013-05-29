@@ -9,19 +9,45 @@ Picture frame
 
 LINUX configurations
 ====================
-- change inittab for automatic login on user pi
-  1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1
+#- change inittab for automatic login on user pi
+1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1
 
-- change /etc/rc.local, add the following lines before the exit 0 line
-
+# DEPRECTATED
+#- change /etc/rc.local, add the following lines before the exit 0 line
+#
         #
         # run mu-photos
         #
         cd /home/pi/mu-server
-        bash run2.sh
-- install the software on a folder /home/pi/mu-photos
+#        bash bin/run_xserver.sh
+#
+        
+- change /boot/config.txt add, 
+Uncoment hdmi-hotplug 
+#
+# MissingYou configurations
+#
+display_rotate=2
 
 
+- install the software on a folder /home/pi/mu-server
+#
+# poweroff
+#
+tvservice -o
+
+#
+# poweron.. using the same user PI
+#
+tvservice -p
+fbset -xres 1920 -yres 1080 -depth 16
+xrefresh
+
+
+pi@raspberrypi ~ $ ps auxw|grep X
+root      2121  0.0  0.1   3036   804 ?        S    09:55   0:00 xinit /home/pi/mu-server/bin/run_muserver.sh -- /etc/X11/xinit/xserverrc :0 -auth /tmp/serverauth.ig9R4EZafO
+root      2122  1.5  5.5  58904 25036 tty2     S<s+ 09:55   0:01 /usr/bin/X -nolisten tcp :0 -auth /tmp/serverauth.ig9R4EZafO
+pi        2248  0.0  0.1   3512   732 pts/1    S+   09:56   0:00 grep --color=auto X
 
 DEPENDENCIES
 ============
