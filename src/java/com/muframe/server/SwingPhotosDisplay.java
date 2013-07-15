@@ -28,8 +28,8 @@ public class SwingPhotosDisplay implements PhotosDisplay, Runnable {
 		Thread t = new Thread(spd);
 		t.start();
 		
-//		Thread.sleep(5000);
-//		spd.showPhoto(new File("/tmp/IsaAzul.jpg"));
+		Thread.sleep(5000);
+		spd.showPhoto(new File("/tmp/isa.jpg"));
 		
 	}
 
@@ -176,7 +176,7 @@ class PD extends JPanel {
 	
 	public PD() {
 		try {
-			File logo = new File(MuServer.PHOTOS_FOLDER + "/logo.png");
+			File logo = new File("/tmp/logo.png");
 			if (logo.exists()) {
 				image = ImageIO.read(logo);
 			}

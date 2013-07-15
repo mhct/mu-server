@@ -1,0 +1,14 @@
+[Unit]
+Description= Sets the 3G Modem interface
+Requires=ozerocdoff.service NetworkManager.service
+After=ozerocdoff.service NetworkManager.service
+
+[Service]
+type=oneshot
+ExecStart=sleep 10 && /usr/bin/nmcli con up uuid cb2571c5-9899-40a6-bfe4-385993b7799b
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+
+

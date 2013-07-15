@@ -1,0 +1,11 @@
+[Unit]
+Description=Switches 3gModem CDROM feature to work as modem
+
+[Service]
+type=oneshot
+ExecStart=/usr/bin/ozerocdoff -wi 0x8300
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+

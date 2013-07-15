@@ -1,0 +1,31 @@
+##############################################################
+#  ARCHILINUX
+##############################################################
+
+
+#
+# install ozerocdoff and HSO kernel module
+#
+ currently it uses 
+
+#
+# packages to install
+#
+pacman -S ozerocedoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev
+xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset
+
+#
+# Configure systemd services
+#
+autologin at https://wiki.archlinux.org/index.php/Automatic_login_to_virtual_console
+
+
+#
+# add services to systems
+#
+cp 3gmodem.service /usr/lib/systemd/system
+cp ozerocdoff.service  /usr/lib/systemd/system
+
+systemctl enable 3gmodem
+systemctl enable ozerocdoff
+
