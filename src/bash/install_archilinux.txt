@@ -11,7 +11,7 @@
 #
 # packages to install
 #
-pacman -S ozerocedoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev
+pacman -S ozerocdoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev
 xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset
 
 #
