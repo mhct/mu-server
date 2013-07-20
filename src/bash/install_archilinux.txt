@@ -12,7 +12,7 @@
 # packages to install
 #
 pacman -S ozerocdoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev
-xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim
+xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi
 
 #
 # Configure systemd services
