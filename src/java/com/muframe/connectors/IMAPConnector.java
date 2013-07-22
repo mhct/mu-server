@@ -37,15 +37,6 @@ public class IMAPConnector implements ServerConnector {
 	private final String IMAP_SERVER = config.getString("mu-server.imap-connector.imap-server");
 	private final String USERNAME = config.getString("mu-server.imap-connector.username");
 	private final String PASSWORD = config.getString("mu-server.imap-connector.password");
-		
-	
-//	private final String IMAP_SERVER = "imap.rgc.be"; 
-//	private final String USERNAME = "" 
-//	private final String PASSWORD = 
-
-	//	private static final String IMAP_SERVER = "127.0.0.1";
-//	private static final String USERNAME = "pi";
-//	private static final String PASSWORD = "donottrytoblueme";
 	
 	private StorageService storageService;
 
@@ -137,35 +128,4 @@ public class IMAPConnector implements ServerConnector {
 	    return photo;
 	}
 	
-//	private void savePhoto(InputStream in) throws IOException {
-//		int bufferSize = 1024 * 512; // Average picture size
-//		byte[] buffer = new byte[8192];
-//		ByteArrayOutputStream out = new ByteArrayOutputStream(bufferSize);
-//		
-//		try {
-//			int len;
-//			while ((len = in.read(buffer)) > 0) {
-//				out.write(buffer);
-//			}
-////			Binary b = new Binary(out.toByteArray());
-////			db.getCollection("photos").insert(new BasicDBObject("photoID", new Binary(out.toByteArray())));
-//			String filename = UUID.randomUUID().toString();
-//			//ADD META DATA.. about the file, timestamp, etc.
-//			System.out.println(filename);
-//			GridFS savefs = new GridFS(db);
-//			GridFSInputFile file = savefs.createFile(out.toByteArray());
-//			file.setFilename(filename);
-//			file.save();
-//			
-//		} catch (IOException e) {
-//			throw new IOException(e);
-//		} finally {
-//			out.close();
-//		}
-//	}
-
-//	public static void main(String[] args) {
-//		IMAPConnector s = IMAPConnector.getInstance(FileStorageService.getInstance(UUIDGenerator.getInstance()));
-//		s.retrievePhotos();
-//	}
 }

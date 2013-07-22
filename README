@@ -58,3 +58,12 @@ HARDWARE
 ========
 Rpi GPIO is configured using BCM
 PIR sensor is connected at pin 7 of the raspberry pi
+
+
+#
+# Turning device off and on while there are no light sensors
+#  
+crontab 
+0 7 * * * /sbin/shutdown -r now
+27 23 * * * tvservice -o
+

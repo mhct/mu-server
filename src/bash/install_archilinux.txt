@@ -12,12 +12,36 @@
 # packages to install
 #
 pacman -S ozerocdoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev
-xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi
+xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi xdotool
 
 #
 # Configure systemd services
 #
-autologin at https://wiki.archlinux.org/index.php/Automatic_login_to_virtual_console
+# autologin at https://wiki.archlinux.org/index.php/Automatic_login_to_virtual_console
+#
+mkdir /etc/systemd/system/getty@tty1.service.d
+
+#create the following file 
+/etc/systemd/system/getty@tty1.service.d/autologin.conf
+
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty --autologin <username> --noclear %I 38400 linux
+Type=simple
+
+#
+# Enable multi user mode
+#
+systemctl enable multi-user.target
+
+
+#
+# Copy the files from a webserver
+#
+wget www.missingyouframe.com/jjjjj
+
+export EDITOR=/usr/bin/vim
+chmod 755 /home/pi/mu-server/bin/screen.sh
 
 
 #
@@ -26,6 +50,18 @@ autologin at https://wiki.archlinux.org/index.php/Automatic_login_to_virtual_con
 cp 3gmodem.service /usr/lib/systemd/system
 cp ozerocdoff.service  /usr/lib/systemd/system
 
+#
+# If using 3GModems run the following lines
+#
 systemctl enable 3gmodem
 systemctl enable ozerocdoff
+
+
+#
+# Activate crontab to turn off the device in the evening and turn on during the day
+#
+DISPLAY=:0.0
+
+0 23 * * * /home/pi/mu-server/bin/screen.sh off
+0 7 * * * /home/pi/mu-server/bin/screen.sh on
 
