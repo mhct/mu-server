@@ -1,0 +1,23 @@
+[connection]
+id=Mobile Vikings Default
+uuid=cb2571c5-9899-40a6-bfe4-385993b7799b
+type=gsm
+timestamp=1372864759
+
+[ppp]
+lcp-echo-failure=5
+lcp-echo-interval=30
+
+[ipv4]
+method=auto
+
+[serial]
+baud=115200
+
+[gsm]
+number=*99#
+username=web
+password=web
+apn=web.be
+pin=1111
+

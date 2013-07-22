@@ -12,7 +12,7 @@
 # packages to install
 #
 pacman -S ozerocdoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev
-xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi xdotool
+xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi xdotool xcalib
 
 #
 # Configure systemd services
@@ -44,21 +44,46 @@ export EDITOR=/usr/bin/vim
 chmod 755 /home/pi/mu-server/bin/screen.sh
 
 
+###############################################################################
+#
+# Configure 3G Modem
+#
+
+#
+# Add HSO modules to the kernel
+# TODO check the commands and packages again
+#
+
 #
 # add services to systems
 #
-cp 3gmodem.service /usr/lib/systemd/system
+#cp 3gmodem.service /usr/lib/systemd/system
 cp ozerocdoff.service  /usr/lib/systemd/system
 
-#
-# If using 3GModems run the following lines
-#
-systemctl enable 3gmodem
+#systemctl enable 3gmodem
 systemctl enable ozerocdoff
 
+#
+# Create configuration for modem and MobileVikings
+#
+cp mobile_vikings /etc/NetworkManager/system-connections 
+chown root:root chmod 600 mobile_vikings
 
 #
-# Activate crontab to turn off the device in the evening and turn on during the day
+# add the following command to the run_xserver.sh script
+# 
+nmcli con up uuid cb2571c5-9899-40a6-bfe4-385993b7799b
+
+
+#################################################################################
+#
+# Configure the WIFI network
+#
+wifi-menu
+
+#################################################################################
+#
+# Turn ON/OFF screen during the night
 #
 DISPLAY=:0.0
 
