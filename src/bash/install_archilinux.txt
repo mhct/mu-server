@@ -4,16 +4,25 @@
 
 
 #
-# install ozerocdoff and HSO kernel module
-#
- currently it uses 
-
-#
 # packages to install
 #
 pacman -S ozerocdoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev
-xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi xdotool xcalib
+xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi xdotool dkms 
 
+#
+# install ozerocdoff and HSO kernel module
+# source: http://www.pharscape.org/forum/index.php?topic=648.msg2757#msg2757
+# currently it uses 
+curl http://www.missingyouframe.com/mu-server/hso.tar.gz -o hso.tar.gz
+tar zxvf hso.tar.gz -C /usr/src
+
+dkms add -m hso -v 1.9
+
+dkms build -m hso -v 1.9
+
+
+
+#xcalib, take a look later.
 #
 # Configure systemd services
 #
