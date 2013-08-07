@@ -1,0 +1,23 @@
+[connection]
+id=BASE.be Default
+uuid=bff144b0-feb2-11e2-b778-0800200c9a66
+type=gsm
+timestamp=1372864759
+
+[ppp]
+lcp-echo-failure=5
+lcp-echo-interval=30
+
+[ipv4]
+method=auto
+
+[serial]
+baud=115200
+
+[gsm]
+number=*99#
+username=base
+password=base
+apn=gprs.base.be
+pin=1111
+

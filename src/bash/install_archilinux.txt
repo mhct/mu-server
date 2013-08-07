@@ -18,9 +18,16 @@ tar zxvf hso.tar.gz -C /usr/src
 
 dkms add -m hso -v 1.9
 
+
 dkms build -m hso -v 1.9
+dkms install  -m hso -v 1.9
 
-
+#
+# Activate services
+#
+systemctl enable NetworkManager
+systemctl enable ModemManager
+systemctl enable dkms.service
 
 #xcalib, take a look later.
 #
