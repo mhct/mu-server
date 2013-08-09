@@ -31,7 +31,7 @@ function download_update {
     $(curl $update_url -o /tmp/mu-server-update.tar.gz)
     # do the checksum
     #$(shasum /tmp/mu-server-update.tar.gz
-    $(tar zxvf /tmp/mu-server-update.tar.gz -C /home/pi/mu-server/
+    $(tar zxvf /tmp/mu-server-update.tar.gz -C /home/pi/mu-server)
 }
 
 server_url=$(check_update_availability)
