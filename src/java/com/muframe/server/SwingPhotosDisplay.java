@@ -170,7 +170,7 @@ class PD extends JPanel {
 //		g.drawImage(original, 0, 0, 1920, 1080, null);
 //		g.dispose();
 		System.out.println("resize called");
-		return original.getScaledInstance(1920, -1, Image.SCALE_FAST);
+		return original.getScaledInstance(1920, -1, Image.SCALE_SMOOTH);
 //		return resizedImage;
 	}
 	
