@@ -13,13 +13,15 @@ function fetch_update_data {
     local __update_url=$1
     local __update_sha=$2
 
+    echo "Checking for updates"
     update_data=$(curl $UPDATE_URL)
     
-    update_url=$(cut -d, -f 1 $update_data)
-    update_sha=$(cut -d, -f 1 $update_data)
-    
-    eval $__update_url="'$update_url'"
-    eval $__update_sha="'$update_sha'"
+    local url=$(echo "$update_data"|cut -d, -f 1)
+    local sha=$(echo "$update_data"| cut -d, -f 2) 
+    #echo $url " - SHA:" $sha 
+
+    eval $__update_url="'$url'"
+    eval $__update_sha="'$sha'"
     
 }
 
@@ -28,13 +30,30 @@ function download_update {
     update_url=$1
     update_sha=$2
 
+    echo "Downloading updates"
     $(curl $update_url -o /tmp/mu-server-update.tar.gz)
     # do the checksum
     #$(shasum /tmp/mu-server-update.tar.gz
-    $(tar zxvf /tmp/mu-server-update.tar.gz -C /home/pi/mu-server)
+    echo "Applying updates"
+    $(tar zxvf /tmp/mu-server-update.tar.gz -C ./)
 }
 
-server_url=$(check_update_availability)
+function touch_version_file {
+    echo "$1" > ./current_version.txt
+}
+
+update_url=""
+update_sha=""
+
+fetch_update_data update_url update_sha
+touch_version_file $update_sha
+
+if [ "$update_sha" != $(cat ./current_version.txt) ]
+then
+    download_update $update_url $update_sha
+else
+    echo "Already latest version of the software"    
+fi
 
 
 
