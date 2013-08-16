@@ -76,7 +76,6 @@ public class SwingPhotosDisplay implements PhotosDisplay, Runnable {
 		
 		pd = new PD();
 		myWindow.add(pd);
-		
 	}
 	
 	private void eventLoop() {
@@ -109,8 +108,6 @@ public class SwingPhotosDisplay implements PhotosDisplay, Runnable {
 				myDevice.setFullScreenWindow(null);
 			}
 		}
-		
-		
 	}
 	
 	@Override

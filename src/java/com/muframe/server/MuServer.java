@@ -1,11 +1,13 @@
 package com.muframe.server;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.EnvironmentConfiguration;
 import org.apache.log4j.Logger;
+import org.glassfish.grizzly.http.server.HttpServer;
 import org.mockito.Mockito;
 
 import com.mongodb.DB;
@@ -26,8 +28,13 @@ public class MuServer implements Runnable {
 	private DB db;
 	private ServerConnector connector;
 
-	private final PhotosDisplay display;
+	private static PhotosDisplay display;
 	private final PhotoStore photoStore;
+	
+	//HACK SHIT FIXME can generate concurrency problems
+	public static void showPhoto(String photo) {
+		display.showPhoto(new File(PHOTOS_FOLDER+photo));
+	}
 	
 	/**
 	 * main run-loop, check apache-daemon for this
@@ -79,19 +86,22 @@ public class MuServer implements Runnable {
 		return new Thread(new MuServer(db, connector, display, photoStore));
 	}
 	
-	public static void main(String[] args) throws UnknownHostException {
-//		MongoClient dbClient = new MongoClient(DB_SERVER_IP, DB_SERVER_PORT);
-//		DB db = dbClient.getDB("muphotos");
-		
-//		PhotosDisplay display = FBIPhotosDisplay.getInstance();
+	public static void main(String[] args) throws IOException {
 //		PIRSensor pir = PIRSensor.getInstance(display);
-		PhotoStore.initializeStore();
 
+		PhotoStore.initializeStore();
+//
 		ServerConnector conn = IMAPConnector.getInstance(FileStorageService.getInstance(UUIDGenerator.getInstance(), PHOTOS_FOLDER));
 		PhotosDisplay display = SwingPhotosDisplay.getInstance();
 		PhotoStore photoStore = PhotoStore.getInstance();
-
+		
+		HttpServer httpServer = MuHttpServer.startServer();
+//		System.in.read();
+//		httpServer.stop();
+		
 		Thread server = MuServer.getInstance(Mockito.mock(DB.class), conn, display, photoStore);
 		server.start();
+		
+//		System.out.println("turning on stuff");
 	}
 }
