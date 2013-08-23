@@ -20,9 +20,7 @@ import org.apache.commons.configuration.EnvironmentConfiguration;
 public class PhotoStore {
 	private static final Configuration config = new EnvironmentConfiguration();
 	
-	private static final String DB_SERVER_IP = config.getString("DB_SERVER_IP", "127.0.0.1");
-	private static final Integer DB_SERVER_PORT = config.getInteger("DB_SERVER_PORT", 27017);
-	private static String connectionURL = "jdbc:derby:MuServerDB;create=true";
+	private static String connectionURL = "jdbc:derby:/home/pi/MuServerDB;create=true"; //FIXME add path as a configuration
 	private static String dropTable = "DROP TABLE PHOTOS";
 	private static String createTable = "CREATE TABLE PHOTOS (photo_id VARCHAR(128) NOT NULL, created_date TIMESTAMP NOT NULL)";
 	private String addPhotoId = "INSERT INTO PHOTOS VALUES (?, CURRENT_TIMESTAMP)";

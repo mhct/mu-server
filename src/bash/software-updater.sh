@@ -7,8 +7,10 @@
 #
 
 UPDATE_URL=http://www.missingyouframe.com/mu-updates/update.txt
-BASE_FOLDER=/Users/danirigolin/Documents/projetos/mu-server/src/bash/temp
+#BASE_FOLDER=/Users/danirigolin/Documents/projetos/mu-server/src/bash/temp
+BASE_FOLDER=/home/pi
 SERVER_PID=$(cat $BASE_FOLDER/pid)
+LOG_FILE=$BASE_FOLDER/log_updates.txt
 
 function fetch_update_data {
     local __update_url=$1
@@ -37,19 +39,19 @@ function download_apply_update {
     # 
     # compares downloaded file SHA with the one described at the update URL
     #
-    if [ "$update_sha" != "$(shasum /tmp/mu-server-update.tar.gz|awk '{print $1}')" ]
+    if [ "$update_sha" != "$(/usr/bin/core_perl/shasum /tmp/mu-server-update.tar.gz|awk '{print $1}')" ]
     then
             echo "Problem with the downloaded file. SHASUM is different."
     else
             echo "Applying updates"
-            cd 
+            
             $(tar zxvf /tmp/mu-server-update.tar.gz -C $BASE_FOLDER/)
 
             #
             # backsup previous simlink and links to new version
             #
             echo "Symlinking new version"
-            version_name=$(tar tvf /tmp/mu-server-update.tar.gz |awk -F/ '{if (NF<3) print}'|awk '{print $(NF-0)}')
+            version_name=$(tar tvf /tmp/mu-server-update.tar.gz |awk -F" " '{ print $6}'|cut -d/ -f 1| head -1)
             rm $BASE_FOLDER/mu-server_previous
             mv $BASE_FOLDER/mu-server $BASE_FOLDER/mu-server_previous
             ln -s $BASE_FOLDER/$version_name $BASE_FOLDER/mu-server
@@ -88,7 +90,8 @@ then
     download_apply_update $update_url $update_sha
     #touch_version_file $update_sha
     restart_mu_server
-    pwd
+    DATE=
+    echo "Update performed at " 
 else
     echo "Already latest version of the software"    
 fi
