@@ -16,5 +16,5 @@ LOGS_FILE=$BASE_FOLDER/mu-server/logs.txt
 export CLASSPATH=/home/pi/mu-server/lib/*
 export PHOTOS_FOLDER="/home/pi/show_photos/"
 
-/home/pi/jdk1.8.0/bin/java -Dconfig.file=$CONFIG_FILE com.muframe.server.MuServer >> $LOGS_FILE &
+/home/pi/jdk1.8.0/bin/java -Dconfig.file=$CONFIG_FILE com.muframe.server.MuServer >> $LOGS_FILE
 echo $! > $BASE_FOLDER/pid

@@ -1,0 +1,26 @@
+#
+# MU configuration
+#
+# 30/08/2013
+# @mariohct
+#
+
+1 - Wifi configuration.
+$ wifi-menu
+Select the desired wifi-network, answer each screen of the wifi-menu software
+
+2 - Enable the wifi profile at boot time. Assuming the configured wifi network is called "Bla"
+$ netctl enable wlan0-Bla
+
+3 - Configure the email address and password
+$ vim /home/pi/application.conf
+
+4 - Check if the wifi is working properly after a reboot
+$ reboot
+
+5 - If wifi network is ok, configure mu-server to load at boot time
+$ mv /root/bash_profile /root/.bash_profile
+
+
+
+
