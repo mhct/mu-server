@@ -22,5 +22,25 @@ $ reboot
 $ mv /root/bash_profile /root/.bash_profile
 
 
+==============================
+Installing the linux image to an SD card, for MacOS X
 
+0 - Download the image. Use curl, the browser, or any other soft.
+$ curl http://people.cs.kuleuven.be/~mariohenrique.cruztorres/mu-server-0.0.4.img.tar.gz  -o mu-server-0.0.4.img.tar.gz
 
+0.1 - Untar the downloaded image file
+$ tar zxvf mu-server-0.0.4.img.tar.gz
+
+1 - Find out the name of the SD card... Put SD card on computer
+$ sudo diskutil list
+
+2 - Unmount the SD card. Example assuming disk is on /dev/disk1
+$ sudo diskutil unmount /dev/disk1
+
+3 - Copy the files. DD does not show any output. Just wait or check info below.
+$ sudo dd bs=1m if=mu-server-0.0.4.img of=/dev/disk1
+
+4 - When DD finishes copying the files, (takes 30 to 40 minutes) eject the SD card
+$ sudo diskutil eject /dev/disk1
+
+PS: For the curious... To check the status of DD, type CTRL+T
