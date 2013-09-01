@@ -35,7 +35,7 @@ $ tar zxvf mu-server-0.0.4.img.tar.gz
 $ sudo diskutil list
 
 2 - Unmount the SD card. Example assuming disk is on /dev/disk1
-$ sudo diskutil unmount /dev/disk1
+$ sudo diskutil unmountDisk /dev/disk1
 
 3 - Copy the files. DD does not show any output. Just wait or check info below.
 $ sudo dd bs=1m if=mu-server-0.0.4.img of=/dev/disk1
