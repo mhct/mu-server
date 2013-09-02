@@ -1,12 +1,11 @@
 package com.muframe.connectors;
 
-import java.io.File;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.muframe.server.StorageService;
-import static org.junit.Assert.*;
 /**
  * Connects to SMTP server an retrieve photos
  * 
@@ -18,7 +17,13 @@ public class SMTPConnectorTest {
 	@Test
 	public void connectGmail() {
 		IMAPConnector conn = IMAPConnector.getInstance(Mockito.mock(StorageService.class));
-		File f = conn.retrievePhotos();
-		assertNotNull(f);
+		conn.retrievePhotos();
+//		assertNotNull(f);
+	}
+	
+	@Test
+	public void testStringRegex() {
+		String str = "Mu-photos";
+		assertTrue(str.matches("[M|m]u-photos?"));
 	}
 }

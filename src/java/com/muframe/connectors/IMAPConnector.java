@@ -17,6 +17,7 @@ import javax.mail.search.SearchTerm;
 import org.apache.log4j.Logger;
 
 import com.muframe.server.MuServer;
+import com.muframe.server.PhotosHolder;
 import com.muframe.server.ServerConnector;
 import com.muframe.server.StorageService;
 import com.muframe.server.UUIDGenerator;
@@ -64,7 +65,7 @@ public class IMAPConnector implements ServerConnector {
 			@Override
 			public boolean match(Message msg) {
 				try {
-					if (! msg.isSet(Flag.SEEN) && msg.getSubject().contains("mu-photo")) {
+					if ( ! msg.isSet(Flag.SEEN) && msg.getSubject().matches("[M|m]u-photos?")) {
 						return true;
 					}
 				} catch (MessagingException e) {
@@ -76,46 +77,41 @@ public class IMAPConnector implements ServerConnector {
 	}
 	
 	@Override
-	public File retrievePhotos() {
+	public PhotosHolder retrievePhotos() {
 		logger.debug("Retrieving photos from IMAP server");
 		logger.debug("IMAP server: " + IMAP_SERVER + "\tusername: " + USERNAME);
 		
-		File photo = null;
+		PhotosHolder photos = PhotosHolder.getInstance();
 		
+		File photo = null;
+		Store store = null;
 	    boolean debug = false;
 
 	    try {
 		    Properties props = new Properties();
 		    props.put("mail.store.protocol", "imaps");
-//		    props.put("mail.store.protocol", "imap"); //USED for local tests
 		    Session session = Session.getDefaultInstance(props);
 	
 		    session.setDebug(debug);
-		    Store store = session.getStore("imaps");
-//		    Store store = session.getStore("imap"); //used for local tests
+		    store = session.getStore("imaps");
 		    store.connect(IMAP_SERVER, USERNAME, PASSWORD);
 		    
 		    Folder inbox = store.getFolder("Inbox");
 	        inbox.open(Folder.READ_WRITE);
 	        
 	        for (Message msg:inbox.search(getSearchQuery())) {
-	        	logger.debug("Found new photo");
+	        	logger.debug("Found new email having photo(s)");
 	        	
 	        	if (msg.getContentType().contains("multipart")) {
 	        		Multipart mp = (Multipart) msg.getContent();
 	        		for (int i=0; i<mp.getCount(); i++) {
-	        			if (mp.getBodyPart(i).getContentType().contains("multipart")) {
+	        			if (mp.getBodyPart(i).getContentType().matches("[M|m]ultipart")) {
 	        				continue;
 	        			}
-	        			if (mp.getBodyPart(i).getContentType().contains("Multipart")) {
-	        				continue;
-	        			}
-	        			
 	        			//TODO identify the file type... running image magick, for example.... to avoid any security attacks, etc.
 	        			photo = new File(MuServer.PHOTOS_FOLDER + UUIDGenerator.getInstance().getId() + ".jpg");
 	        			((MimeBodyPart) mp.getBodyPart(i)).saveFile(photo);
-//	        			storageService.persist(((MimeBodyPart) mp.getBodyPart(i)).getInputStream());
-	        			
+	        			photos.add(photo);
 	        		}
 		        }
 	        }
@@ -124,8 +120,16 @@ public class IMAPConnector implements ServerConnector {
 	    } catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				store.close();
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-	    return photo;
+	    
+	    return photos;
 	}
 	
 }

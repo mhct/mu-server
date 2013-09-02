@@ -13,16 +13,20 @@ import org.mockito.Mockito;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.muframe.connectors.IMAPConnector;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 public class MuServer implements Runnable {
 	private static final Logger logger = Logger.getLogger(MuServer.class);
-	private static final Configuration config = new EnvironmentConfiguration();
+	
+	private static final Config config = ConfigFactory.load();
+
 	
 //	private static final String DB_SERVER_IP = config.getString("DB_SERVER_IP", "127.0.0.1");
 //	private static final Integer DB_SERVER_PORT = config.getInteger("DB_SERVER_PORT", 27017);
-	public static final String PHOTOS_FOLDER = config.getString("PHOTOS_FOLDER", "/home/pi/mu-server/show_photos/");
+	public static final String PHOTOS_FOLDER = config.getString("mu-server.photos-folder");
 	
-	private static final long SLEEPING_TIME = 60000; //miliseconds
+	private static final long SLEEPING_TIME = 60000; //milisecond
 
 
 	private DB db;
@@ -43,12 +47,14 @@ public class MuServer implements Runnable {
 		reloadLastPicture();
 		
 		for(;;) {
-			File photo = null;
-			if ( (photo = connector.retrievePhotos()) != null){
-				logger.debug("New photo: " + photo.getAbsolutePath());
+			PhotosHolder photos = null;
+			if ( (photos = connector.retrievePhotos()) != null){
+//				logger.debug("New photo: " + photo.getAbsolutePath());
 				System.out.println("PEGOU FOTO NOVA");
-				photoStore.addPhotoId(photo.getAbsolutePath());
-				display.showPhoto(photo);
+				
+				// the logic to alternate between photos has to come here?!
+//				photoStore.addPhotoId(photo.getAbsolutePath());
+//				display.showPhoto(photo);
 			}
 			try {
 				Thread.sleep(SLEEPING_TIME);

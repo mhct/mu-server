@@ -6,8 +6,8 @@
 #
 # packages to install
 #
-pacman -S ozerocdoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev
-xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi xdotool dkms nodejs 
+pacman -S ozerocdoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev \
+xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi xdotool dkms nodejs linux-headers-raspberrypi 
 
 #
 # install the webserver in nodejs?!
@@ -40,10 +40,10 @@ systemctl enable dkms.service
 #
 # autologin at https://wiki.archlinux.org/index.php/Automatic_login_to_virtual_console
 #
-mkdir /etc/systemd/system/getty@tty1.service.d
+#mkdir /etc/systemd/system/getty@tty1.service.d
 
 #create the following file 
-/etc/systemd/system/getty@tty1.service.d/autologin.conf
+#/etc/systemd/system/getty@tty1.service.d/autologin.conf
 
 [Service]
 ExecStart=
@@ -112,3 +112,9 @@ DISPLAY=:0.0
 0 7 * * * /home/pi/mu-server/bin/screen.sh on
 
 curl  -H "Content-Type: application/json" -X POST -d "{\"address\":\"192.168.0.0\",\"name\":\"billbouloukou\"}" http://still-fortress-4247.herokuapp.com/updateIp
+
+
+#
+# enable network
+#
+nmcli dev wifi connect bla password jujukiki
