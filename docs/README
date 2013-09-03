@@ -21,15 +21,31 @@ $ reboot
 5 - If wifi network is ok, configure mu-server to load at boot time
 $ mv /root/bash_profile /root/.bash_profile
 
+==================================
+1 - Wifi Configuration NEW METHOD
+- List devices managed by NetworkManager (check if wlan0 is there)
+$ nmcli d 
+
+2 - Create a new wifi connection
+$ nmcli dev wifi connect WIFI_NETWORK_NAME password WIFI_PASSWORD
+
+3 - Configure the email address and password
+$ vim /home/pi/application.conf
+
+4 - Check if the wifi is working properly after a reboot
+$ reboot
+
 
 ==============================
 Installing the linux image to an SD card, for MacOS X
 
 0 - Download the image. Use curl, the browser, or any other soft.
-$ curl http://people.cs.kuleuven.be/~mariohenrique.cruztorres/mu-server-0.0.4.img.tar.gz  -o mu-server-0.0.4.img.tar.gz
+$ curl http://people.cs.kuleuven.be/~mariohenrique.cruztorres/mu-server-0.0.5.img.zip  -o mu-server-0.0.4.img.zip
 
-0.1 - Untar the downloaded image file
-$ tar zxvf mu-server-0.0.4.img.tar.gz
+#0.1 - Untar the downloaded image file
+#$ tar zxvf mu-server-0.0.4.img.tar.gz
+0.1 - Unzip the downloaded image file
+$ unzip mu-server-0.0.5.img.zip
 
 1 - Find out the name of the SD card... Put SD card on computer
 $ sudo diskutil list
