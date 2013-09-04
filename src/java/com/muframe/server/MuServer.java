@@ -8,9 +8,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.im4java.core.ConvertCmd;
 import org.im4java.core.IM4JavaException;
 import org.im4java.core.IMOperation;
-import org.mockito.Mockito;
 
-import com.mongodb.DB;
 import com.muframe.connectors.IMAPConnector;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -24,12 +22,13 @@ public class MuServer implements Runnable {
 
 
 	private ServerConnector connector;
-	private static PhotosDisplay display;
+	private final PhotosDisplay display;
 	private final PhotoStore photoStore;
+	private static MuServer muServer;
 	
 	//HACK SHIT FIXME can generate concurrency problems
 	public static void showPhoto(String photo) {
-		display.showPhoto(new File(PHOTOS_FOLDER+photo));
+		MuServer.muServer.display.showPhoto(new File(PHOTOS_FOLDER+photo));
 	}
 	
 	/**
@@ -87,8 +86,8 @@ public class MuServer implements Runnable {
 		}
 	}
 	
-	private MuServer(DB db, ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {
-		if (db == null || connector == null || photoStore == null) {
+	private MuServer(ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {
+		if (connector == null || display == null || photoStore == null) {
 			throw new IllegalArgumentException("DB or Connector can not be null");
 		}
 		
@@ -97,8 +96,9 @@ public class MuServer implements Runnable {
 		this.photoStore = photoStore;
 	}
 	
-	public static Thread getInstance(DB db, ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {
-		return new Thread(new MuServer(db, connector, display, photoStore));
+	public static Thread getInstance(ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {
+		MuServer.muServer = new MuServer(connector, display, photoStore);
+		return new Thread(MuServer.muServer);
 	}
 	
 	public static void main(String[] args) throws IOException {
@@ -114,7 +114,7 @@ public class MuServer implements Runnable {
 //		System.in.read();
 //		httpServer.stop();
 		
-		Thread server = MuServer.getInstance(Mockito.mock(DB.class), conn, display, photoStore);
+		Thread server = MuServer.getInstance(conn, display, photoStore);
 		server.start();
 		
 //		System.out.println("turning on stuff");
