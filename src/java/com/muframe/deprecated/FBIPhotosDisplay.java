@@ -1,9 +1,11 @@
-package com.muframe.server;
+package com.muframe.deprecated;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+
+import com.muframe.server.PhotosDisplay;
 
 public class FBIPhotosDisplay implements Runnable, PhotosDisplay {
 	private static final Logger logger = Logger.getLogger(FBIPhotosDisplay.class);

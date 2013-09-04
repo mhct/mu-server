@@ -2,36 +2,28 @@ package com.muframe.server;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.UnknownHostException;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.EnvironmentConfiguration;
 import org.apache.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.im4java.core.ConvertCmd;
+import org.im4java.core.IM4JavaException;
+import org.im4java.core.IMOperation;
 import org.mockito.Mockito;
 
 import com.mongodb.DB;
-import com.mongodb.MongoClient;
 import com.muframe.connectors.IMAPConnector;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 public class MuServer implements Runnable {
 	private static final Logger logger = Logger.getLogger(MuServer.class);
-	
-	private static final Config config = ConfigFactory.load();
 
-	
-//	private static final String DB_SERVER_IP = config.getString("DB_SERVER_IP", "127.0.0.1");
-//	private static final Integer DB_SERVER_PORT = config.getInteger("DB_SERVER_PORT", 27017);
+	private static final Config config = ConfigFactory.load();
 	public static final String PHOTOS_FOLDER = config.getString("mu-server.photos-folder");
-	
 	private static final long SLEEPING_TIME = 60000; //milisecond
 
 
-	private DB db;
 	private ServerConnector connector;
-
 	private static PhotosDisplay display;
 	private final PhotoStore photoStore;
 	
@@ -50,17 +42,35 @@ public class MuServer implements Runnable {
 			PhotosHolder photos = null;
 			if ( (photos = connector.retrievePhotos()) != null){
 //				logger.debug("New photo: " + photo.getAbsolutePath());
-				System.out.println("PEGOU FOTO NOVA");
+				System.out.println("Has New photos");
 				
+				for (File photo: photos) {
+					photoStore.addPhotoId(photo.getAbsolutePath());
+//					convertPhoto(photo.getAbsolutePath());
+				}
 				// the logic to alternate between photos has to come here?!
-//				photoStore.addPhotoId(photo.getAbsolutePath());
-//				display.showPhoto(photo);
+				
+				display.showPhoto(new File(photoStore.getLastPhotoId()));
 			}
 			try {
 				Thread.sleep(SLEEPING_TIME);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	private void convertPhoto(String original, String converted) {
+		ConvertCmd cmd = new ConvertCmd();
+		IMOperation op = new IMOperation();
+		op.resize(1920, 1080);
+		op.colorspace("RGB");
+		op.addImage(original, converted);
+		try {
+			cmd.run(op, original, converted);
+		} catch (IOException | InterruptedException | IM4JavaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -82,7 +92,6 @@ public class MuServer implements Runnable {
 			throw new IllegalArgumentException("DB or Connector can not be null");
 		}
 		
-		this.db = db;
 		this.connector = connector;
 		this.display = display;
 		this.photoStore = photoStore;
@@ -97,7 +106,7 @@ public class MuServer implements Runnable {
 
 		PhotoStore.initializeStore();
 //
-		ServerConnector conn = IMAPConnector.getInstance(FileStorageService.getInstance(UUIDGenerator.getInstance(), PHOTOS_FOLDER));
+		ServerConnector conn = IMAPConnector.getInstance();
 		PhotosDisplay display = SwingPhotosDisplay.getInstance();
 		PhotoStore photoStore = PhotoStore.getInstance();
 		

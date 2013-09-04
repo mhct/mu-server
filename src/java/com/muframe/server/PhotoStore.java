@@ -8,22 +8,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.EnvironmentConfiguration;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 /**
- * Persists photo IDs
+ * Persists photo IDs, and metadata
  * 
  * @author mariohct
  *
  */
 public class PhotoStore {
-	private static final Configuration config = new EnvironmentConfiguration();
+	private static final Config config = ConfigFactory.load();
 	
-	private static String connectionURL = "jdbc:derby:/home/pi/MuServerDB;create=true"; //FIXME add path as a configuration
-	private static String dropTable = "DROP TABLE PHOTOS";
-	private static String createTable = "CREATE TABLE PHOTOS (photo_id VARCHAR(128) NOT NULL, created_date TIMESTAMP NOT NULL)";
-	private String addPhotoId = "INSERT INTO PHOTOS VALUES (?, CURRENT_TIMESTAMP)";
+	private static String connectionURL = "jdbc:derby:" + config.getString("mu-server.database-folder") + ";create=true";
+	private static final String dropTable = "DROP TABLE PHOTOS";
+	private static final String createTable = "CREATE TABLE PHOTOS (photo_id VARCHAR(128) NOT NULL, created_date TIMESTAMP NOT NULL)";
+	private static final String  addPhotoId = "INSERT INTO PHOTOS VALUES (?, CURRENT_TIMESTAMP)";
 	private Connection conn;
 	
 	private PhotoStore(Connection conn) {
@@ -44,6 +44,21 @@ public class PhotoStore {
 			throw new RuntimeException("Problem adding data to databse: photoID" + photoId + "$ error: " + e);
 		}
 	}
+	
+	public String getLastPhotoId() {
+		String photoId = null;
+		try {
+			Statement s = conn.createStatement();
+			s.execute("SELECT photo_id FROM PHOTOS ORDER BY created_date DESC");
+			ResultSet result = s.getResultSet();
+			if (result.next()) {
+				photoId = result.getString("photo_id");
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException("Cant select photo. Error: " + e);
+		}
+		return photoId;
+	}	
 	
 	public static PhotoStore getInstance() {
 		return new PhotoStore(PhotoStore.getConnection());
@@ -105,18 +120,4 @@ public class PhotoStore {
 		}
 	}
 
-	public String getLastPhotoId() {
-		String photoId = null;
-		try {
-			Statement s = conn.createStatement();
-			s.execute("SELECT photo_id FROM PHOTOS ORDER BY created_date DESC");
-			ResultSet result = s.getResultSet();
-			if (result.next()) {
-				photoId = result.getString("photo_id");
-			}
-		} catch (SQLException e) {
-			throw new RuntimeException("Cant select photo. Error: " + e);
-		}
-		return photoId;
-	}
 }

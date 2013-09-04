@@ -1,4 +1,4 @@
-package com.muframe.controllers;
+package com.muframe.deprecated;
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;

@@ -1,4 +1,4 @@
-package com.muframe.server;
+package com.muframe.deprecated;
 
 import java.io.File;
 import java.io.IOException;

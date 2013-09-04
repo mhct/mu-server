@@ -1,4 +1,4 @@
-package com.muframe.server;
+package com.muframe.deprecated;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.log4j.Logger;
+
+import com.muframe.server.IDStrategy;
 
 /**
  * Provides a interface for persisting and retrieving files from the secondary storage
