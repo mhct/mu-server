@@ -9,8 +9,16 @@
 UPDATE_URL=http://www.missingyouframe.com/mu-updates/update.txt
 #BASE_FOLDER=/Users/danirigolin/Documents/projetos/mu-server/src/bash/temp
 BASE_FOLDER=/home/pi
-SERVER_PID=$(cat $BASE_FOLDER/pid)
+SERVER_PID=$(pidof java)
 LOG_FILE=$BASE_FOLDER/log_updates.txt
+
+function is_online {
+	if [ "$(ping -q -c1 www.missingyouframe.com)" ]; then
+		echo "true"
+	else
+		echo "false"
+	fi
+}
 
 function fetch_update_data {
     local __update_url=$1
@@ -77,22 +85,29 @@ function restart_mu_server {
 update_url=""
 update_sha=""
 
+
+
+if [ "true" = "$(is_online)" ]; then
 cd $BASE_FOLDER
 pwd
-fetch_update_data update_url update_sha
-#touch_version_file $update_sha
+	fetch_update_data update_url update_sha
+	
+	
+	#echo $update_sha
+	#echo $(cat ./current_version.txt)
+	
+	if [ "$update_sha" != "$(cat ./current_version.txt)" ]
+	then
+	    download_apply_update $update_url $update_sha
+	    #touch_version_file $update_sha
+	    restart_mu_server
+	    DATE=$(date)
+	    echo "Update performed at " $DATE 
+	else
+	    echo "Already latest version of the software"    
+	fi
 
-#echo $update_sha
-#echo $(cat ./current_version.txt)
-
-if [ "$update_sha" != "$(cat ./current_version.txt)" ]
-then
-    download_apply_update $update_url $update_sha
-    #touch_version_file $update_sha
-    restart_mu_server
-    DATE=
-    echo "Update performed at " 
 else
-    echo "Already latest version of the software"    
+	echo "No internet connection"
 fi
-
+	
