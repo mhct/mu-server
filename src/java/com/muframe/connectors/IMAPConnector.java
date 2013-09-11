@@ -114,7 +114,9 @@ public class IMAPConnector implements ServerConnector {
 			e.printStackTrace();
 		} finally {
 			try {
-				store.close();
+				if (store != null) {
+					store.close();
+				}
 			} catch (MessagingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

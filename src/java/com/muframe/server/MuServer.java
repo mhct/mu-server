@@ -3,8 +3,9 @@ package com.muframe.server;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
-import org.glassfish.grizzly.http.server.HttpServer;
 import org.im4java.core.ConvertCmd;
 import org.im4java.core.IM4JavaException;
 import org.im4java.core.IMOperation;
@@ -12,30 +13,38 @@ import org.im4java.core.IMOperation;
 import com.muframe.connectors.IMAPConnector;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import components.SimpleDisplay;
 
 public class MuServer implements Runnable {
 	private static final Logger logger = Logger.getLogger(MuServer.class);
 
 	private static final Config config = ConfigFactory.load();
 	public static final String PHOTOS_FOLDER = config.getString("mu-server.photos-folder");
-	private static final long SLEEPING_TIME = 60000; //milisecond
+	private static final long SLEEPING_TIME = 30000; //milisecond
 
 
 	private ServerConnector connector;
-	private final PhotosDisplay display;
+//	private final PhotosDisplay display;
 	private final PhotoStore photoStore;
 	private static MuServer muServer;
 	
 	//HACK SHIT FIXME can generate concurrency problems
-	public static void showPhoto(String photo) {
-		MuServer.muServer.display.showPhoto(new File(PHOTOS_FOLDER + "/" +photo));
+	public static void showPhoto(final String photo) {
+//		MuServer.muServer.display.showPhoto(new File(PHOTOS_FOLDER + "/" +photo));
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				SimpleDisplay.changePhoto(new File(PHOTOS_FOLDER + "/" + photo));
+			}
+		});
 	}
 	
 	/**
 	 * main run-loop, check apache-daemon for this
 	 */
 	public void run() {
-		reloadLastPicture();
+//		reloadLastPicture();
 		
 		for(;;) {
 			PhotosHolder photos = null;
@@ -53,7 +62,16 @@ public class MuServer implements Runnable {
 					logger.debug("LastPhotoId: " + lastPhotoId);
 					
 					if (lastPhotoId != null) {
-						display.showPhoto(new File(lastPhotoId));
+//						display.showPhoto(new File(lastPhotoId));
+						final File photo = new File(lastPhotoId);
+						if (photo != null) {
+							SwingUtilities.invokeLater(new Runnable() {
+								@Override
+								public void run() {
+									SimpleDisplay.changePhoto(photo);
+								}
+							});
+						}
 					}
 				}
 			}
@@ -79,26 +97,27 @@ public class MuServer implements Runnable {
 		}
 	}
 	
-	private void reloadLastPicture() {
-		String lastPhoto = null;
-		if ((lastPhoto = photoStore.getLastPhotoId()) != null) {
-			File photo = new File(lastPhoto);
-			
-			if(photo.exists()) {
-				display.showPhoto(photo);
-			} else {
-				logger.debug("Couldn't load last phooto. lastphoto: " + photoStore.getLastPhotoId());
-			}
-		}
-	}
+//	private void reloadLastPicture() {
+//		String lastPhoto = null;
+//		if ((lastPhoto = photoStore.getLastPhotoId()) != null) {
+//			File photo = new File(lastPhoto);
+//			
+//			if(photo.exists()) {
+//				display.showPhoto(photo);
+//			} else {
+//				logger.debug("Couldn't load last phooto. lastphoto: " + photoStore.getLastPhotoId());
+//			}
+//		}
+//	}
 	
 	private MuServer(ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {
-		if (connector == null || display == null || photoStore == null) {
+//		if (connector == null || display == null || photoStore == null) {
+		if (connector == null || photoStore == null) {
 			throw new IllegalArgumentException("DB or Connector can not be null");
 		}
 		
 		this.connector = connector;
-		this.display = display;
+//		this.display = display;
 		this.photoStore = photoStore;
 	}
 	
@@ -107,20 +126,23 @@ public class MuServer implements Runnable {
 		return new Thread(MuServer.muServer);
 	}
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 //		PIRSensor pir = PIRSensor.getInstance(display);
 
 		PhotoStore.initializeStore();
 //
 		ServerConnector conn = IMAPConnector.getInstance();
-		PhotosDisplay display = SwingPhotosDisplay.getInstance();
+//		PhotosDisplay display = SwingPhotosDisplay.getInstance();
+		SimpleDisplay.createGUI();
 		PhotoStore photoStore = PhotoStore.getInstance();
 		
-		HttpServer httpServer = MuHttpServer.startServer();
+		//TEST
+//		HttpServer httpServer = MuHttpServer.startServer();
+		
 //		System.in.read();
 //		httpServer.stop();
 		
-		Thread server = MuServer.getInstance(conn, display, photoStore);
+		Thread server = MuServer.getInstance(conn, null, photoStore);
 		server.start();
 		
 //		System.out.println("turning on stuff");

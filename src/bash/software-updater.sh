@@ -9,7 +9,7 @@
 UPDATE_URL=http://www.missingyouframe.com/mu-updates/update.txt
 #BASE_FOLDER=/Users/danirigolin/Documents/projetos/mu-server/src/bash/temp
 BASE_FOLDER=/home/pi
-SERVER_PID=$(pidof java)
+SERVER_PID=$(/usr/bin/pidof java)
 LOG_FILE=$BASE_FOLDER/log_updates.txt
 
 function is_online {
