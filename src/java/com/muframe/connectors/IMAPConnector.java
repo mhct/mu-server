@@ -100,7 +100,7 @@ public class IMAPConnector implements ServerConnector {
 	        				continue;
 	        			} else if (mp.getBodyPart(i).getContentType().contains("IMAGE/JPEG;")) {
 		        			//TODO identify the file type... running image magick, for example.... to avoid any security attacks, etc.
-		        			photo = new File(MuServer.PHOTOS_FOLDER + File.separator + UUIDGenerator.getInstance().getId() + ".jpg");
+		        			photo = new File(MuServer.PHOTOS_FOLDER + "/" + UUIDGenerator.getInstance().getId() + ".jpg");
 		        			((MimeBodyPart) mp.getBodyPart(i)).saveFile(photo);
 		        			photos.add(photo); //and also some message metadata (date, from)
 	        			}

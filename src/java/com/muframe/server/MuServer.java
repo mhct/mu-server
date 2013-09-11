@@ -28,7 +28,7 @@ public class MuServer implements Runnable {
 	
 	//HACK SHIT FIXME can generate concurrency problems
 	public static void showPhoto(String photo) {
-		MuServer.muServer.display.showPhoto(new File(PHOTOS_FOLDER+photo));
+		MuServer.muServer.display.showPhoto(new File(PHOTOS_FOLDER + "/" +photo));
 	}
 	
 	/**
@@ -40,16 +40,22 @@ public class MuServer implements Runnable {
 		for(;;) {
 			PhotosHolder photos = null;
 			if ( (photos = connector.retrievePhotos()) != null){
-//				logger.debug("New photo: " + photo.getAbsolutePath());
-				System.out.println("Has New photos");
+				logger.debug("Has New photos");
+				logger.debug("Number of photos: " + photos.size());
 				
 				for (File photo: photos) {
 					photoStore.addPhotoId(photo.getAbsolutePath());
 //					convertPhoto(photo.getAbsolutePath());
 				}
 				// the logic to alternate between photos has to come here?!
-				
-				display.showPhoto(new File(photoStore.getLastPhotoId()));
+				if (photos.size() != 0) {
+					String lastPhotoId = photoStore.getLastPhotoId();
+					logger.debug("LastPhotoId: " + lastPhotoId);
+					
+					if (lastPhotoId != null) {
+						display.showPhoto(new File(lastPhotoId));
+					}
+				}
 			}
 			try {
 				Thread.sleep(SLEEPING_TIME);
