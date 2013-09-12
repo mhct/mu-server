@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -28,11 +29,11 @@ public class SimpleDisplay extends JPanel {
 	public SimpleDisplay() throws IOException {
         super(new GridLayout(1,1));
 
-//        ImageIcon icon = new ImageIcon(SimpleDisplay.class.getResource("/logo.jpg"));
+        ImageIcon icon = new ImageIcon(SimpleDisplay.class.getResource("/logo.jpg"));
 
-//        labelPhoto = new JLabel(null,
-//                            icon,
-//                            JLabel.CENTER);
+        labelPhoto = new JLabel(null,
+                            icon,
+                            JLabel.CENTER);
 
         labelPhoto = new JLabel();
         labelPhoto.setBackground(Color.BLACK);
@@ -63,7 +64,7 @@ public class SimpleDisplay extends JPanel {
         }
     }
 
-    private static void createAndShowGUI() throws IOException {
+    private static void createAndShowGUI() throws IOException, URISyntaxException {
         JFrame frame = new JFrame("SimplePhotosDisplay");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(new Dimension(1920, 1080));
@@ -72,6 +73,7 @@ public class SimpleDisplay extends JPanel {
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
 		frame.getContentPane().setCursor(blankCursor);
+
 		
         fucking = new SimpleDisplay();
         frame.add(fucking);
@@ -85,7 +87,12 @@ public class SimpleDisplay extends JPanel {
             public void run() {
 				try {
 					createAndShowGUI();
+					//loads logo (TODO fix this.. it is a hack)
+					changePhoto(new File(SimpleDisplay.class.getResource("/logo.jpg").toURI()));
 				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
             }
@@ -93,16 +100,7 @@ public class SimpleDisplay extends JPanel {
 	}
     
 	public static void main(String[] args) throws InterruptedException {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-				try {
-					createAndShowGUI();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-            }
-        });
-        
+		createGUI();
         
         Thread.sleep(10000);
         SwingUtilities.invokeLater(new Runnable() {

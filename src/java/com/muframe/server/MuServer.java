@@ -19,6 +19,7 @@ public class MuServer implements Runnable {
 	private static final Logger logger = Logger.getLogger(MuServer.class);
 
 	private static final Config config = ConfigFactory.load();
+	public static final String RAW_PHOTOS_FOLDER = config.getString("mu-server.raw-photos-folder");
 	public static final String PHOTOS_FOLDER = config.getString("mu-server.photos-folder");
 	private static final long SLEEPING_TIME = 30000; //milisecond
 
@@ -52,8 +53,10 @@ public class MuServer implements Runnable {
 				logger.debug("Has New photos");
 				logger.debug("Number of photos: " + photos.size());
 				
+				//TODO refactor this out
 				for (File photo: photos) {
-					photoStore.addPhotoId(photo.getAbsolutePath());
+					convertPhoto(photo.getAbsolutePath(), PHOTOS_FOLDER + "/" + photo.getName());
+					photoStore.addPhotoId(PHOTOS_FOLDER + "/" + photo.getName());
 //					convertPhoto(photo.getAbsolutePath());
 				}
 				// the logic to alternate between photos has to come here?!
@@ -62,7 +65,6 @@ public class MuServer implements Runnable {
 					logger.debug("LastPhotoId: " + lastPhotoId);
 					
 					if (lastPhotoId != null) {
-//						display.showPhoto(new File(lastPhotoId));
 						final File photo = new File(lastPhotoId);
 						if (photo != null) {
 							SwingUtilities.invokeLater(new Runnable() {
@@ -84,17 +86,22 @@ public class MuServer implements Runnable {
 	}
 	
 	private void convertPhoto(String original, String converted) {
+		logger.debug("Resizing photo: " + original + " to " + converted);
 		ConvertCmd cmd = new ConvertCmd();
 		IMOperation op = new IMOperation();
 		op.resize(1920, 1080);
-		op.colorspace("RGB");
-		op.addImage(original, converted);
+//		op.colorspace("RGB");
+		op.addImage(original);
+		op.addImage(converted);
 		try {
-			cmd.run(op, original, converted);
+			cmd.run(op);
 		} catch (IOException | InterruptedException | IM4JavaException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.debug("Resize error");
 		}
+		
+		logger.debug("Resize finished");		
 	}
 	
 //	private void reloadLastPicture() {

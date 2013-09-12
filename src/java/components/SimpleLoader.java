@@ -7,17 +7,18 @@ import javax.swing.SwingUtilities;
 public class SimpleLoader {
 	
 	public static void main(String[] args) throws InterruptedException {
+		
 		final String[] photos = {"/tmp/test1.jpg", "/tmp/test2.jpg"};
 		
 		SimpleDisplay.createGUI();
     
-		new Runnable() {
+		Thread m = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
 				for (int i=0; i<10; i++) {
 					try {
-						Thread.sleep(30000);
+						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -32,6 +33,7 @@ public class SimpleLoader {
 				}
 				
 			}
-		};
+		});
+		m.start();
     }
 }
