@@ -49,8 +49,8 @@ public class MuServer implements Runnable {
 		
 		for(;;) {
 			PhotosHolder photos = null;
-			if ( (photos = connector.retrievePhotos()) != null){
-				logger.debug("Has New photos");
+			if ( (photos = connector.retrievePhotos()) != null){ //TODO test hasphtos?
+//				logger.debug("Has New photos");
 				logger.debug("Number of photos: " + photos.size());
 				
 				//TODO refactor this out

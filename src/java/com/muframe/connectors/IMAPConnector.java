@@ -99,6 +99,7 @@ public class IMAPConnector implements ServerConnector {
 	        				logger.info("Jumping... another multipart thing");
 	        				continue;
 	        			} else if (mp.getBodyPart(i).getContentType().contains("IMAGE/JPEG;")) {
+	        				//FIXME add test for emails from Mail app from mac
 		        			//TODO identify the file type... running image magick, for example.... to avoid any security attacks, etc.
 		        			photo = new File(MuServer.RAW_PHOTOS_FOLDER + "/" + UUIDGenerator.getInstance().getId() + ".jpg");
 		        			((MimeBodyPart) mp.getBodyPart(i)).saveFile(photo);

@@ -53,7 +53,7 @@ function download_apply_update {
     else
             echo "Applying updates"
             
-            $(tar zxvf /tmp/mu-server-update.tar.gz -C $BASE_FOLDER/)
+            $(tar zxf /tmp/mu-server-update.tar.gz -C $BASE_FOLDER/)
 
             #
             # backsup previous simlink and links to new version
