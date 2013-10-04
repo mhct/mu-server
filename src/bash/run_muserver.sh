@@ -49,5 +49,7 @@ then
     echo "Connected using Modem" >> $LOGS_FILE
 fi
 
+ssh $PORT:127.0.0.1:22 mario@ssh.cs.kuleuven.be -N &
+
 /home/pi/jdk1.8.0/bin/java -Dconfig.file=$CONFIG_FILE com.muframe.server.MuServer >> $LOGS_FILE 2>&1
 
