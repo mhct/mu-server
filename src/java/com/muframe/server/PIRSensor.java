@@ -26,6 +26,7 @@ public class PIRSensor implements Runnable {
 		this.display = display;
 		
 		final GpioController gpio = GpioFactory.getInstance();
+		//http://pi4j.com/usage#Pin_Numbering
 		GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, "pin22");
 		myButton.addListener(new GpioPinListenerDigital() {
 
