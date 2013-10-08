@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 public class SimpleDisplay extends JPanel {
@@ -28,8 +29,8 @@ public class SimpleDisplay extends JPanel {
 
 	public SimpleDisplay() throws IOException {
         super(new GridLayout(1,1));
-
-        ImageIcon icon = new ImageIcon(SimpleDisplay.class.getResource("/logo.jpg"));
+        
+        ImageIcon icon = new ImageIcon(IOUtils.toByteArray(SimpleDisplay.class.getResourceAsStream("/logo.jpg")));
 
         labelPhoto = new JLabel(null,
                             icon,

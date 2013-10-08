@@ -2,10 +2,12 @@ package com.muframe.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.im4java.core.CommandException;
 import org.im4java.core.ConvertCmd;
 import org.im4java.core.IM4JavaException;
 import org.im4java.core.IMOperation;
@@ -25,14 +27,10 @@ public class MuServer implements Runnable {
 
 
 	private ServerConnector connector;
-//	private final PhotosDisplay display;
 	private final PhotoStore photoStore;
 	private static MuServer muServer;
 	
-	//HACK SHIT FIXME can generate concurrency problems
 	public static void showPhoto(final String photo) {
-//		MuServer.muServer.display.showPhoto(new File(PHOTOS_FOLDER + "/" +photo));
-		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -95,6 +93,11 @@ public class MuServer implements Runnable {
 		op.addImage(converted);
 		try {
 			cmd.run(op);
+		} catch (CommandException e) {
+            List<String> cmdError = e.getErrorText();
+            for (String line:cmdError) {
+              System.err.println(line);
+            }
 		} catch (IOException | InterruptedException | IM4JavaException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,6 +129,7 @@ public class MuServer implements Runnable {
 		this.connector = connector;
 //		this.display = display;
 		this.photoStore = photoStore;
+		
 	}
 	
 	public static Thread getInstance(ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {
