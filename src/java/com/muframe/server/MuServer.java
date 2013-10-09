@@ -85,7 +85,7 @@ public class MuServer implements Runnable {
 	
 	private void convertPhoto(String original, String converted) {
 		logger.debug("Resizing photo: " + original + " to " + converted);
-		ConvertCmd cmd = new ConvertCmd();
+		ConvertCmd cmd = new ConvertCmd(true);
 		IMOperation op = new IMOperation();
 		op.resize(1920, 1080);
 //		op.colorspace("RGB");

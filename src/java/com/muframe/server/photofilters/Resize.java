@@ -13,12 +13,12 @@ public class Resize implements PhotoFilter {
 
 	@Override
 	public File filter(File photo) throws IOException {
-		convertPhoto(photo.getAbsolutePath(), "/tmp/t.jpg");
+		convertPhoto(photo.getAbsolutePath(), "/tmp/converted.jpg");
 		return null;
 	}
 	
 	private void convertPhoto(String original, String converted) {
-		ConvertCmd cmd = new ConvertCmd();
+		ConvertCmd cmd = new ConvertCmd(true);
 		IMOperation op = new IMOperation();
 		op.resize(1920, 1080);
 		op.addImage(original);
@@ -30,6 +30,7 @@ public class Resize implements PhotoFilter {
             for (String line:cmdError) {
               System.err.println(line);
             }
+            e.printStackTrace();
 		} catch (IOException | InterruptedException | IM4JavaException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 public class SimpleDisplay extends JPanel {
@@ -30,8 +29,8 @@ public class SimpleDisplay extends JPanel {
 	public SimpleDisplay() throws IOException {
         super(new GridLayout(1,1));
         
-        ImageIcon icon = new ImageIcon(IOUtils.toByteArray(SimpleDisplay.class.getResourceAsStream("/logo.jpg")));
-
+//        ImageIcon icon = new ImageIcon(IOUtils.toByteArray(getClass().getResourceAsStream("/logo.jpg")));
+        ImageIcon icon = null;
         labelPhoto = new JLabel(null,
                             icon,
                             JLabel.CENTER);
@@ -51,6 +50,15 @@ public class SimpleDisplay extends JPanel {
 			fucking.labelPhoto.setIcon(createImageIcon(photo));
 		} catch (IOException e) {
 			logger.debug("Fucking exception" + e);
+			e.printStackTrace();
+		}
+	}
+	
+	protected static void showLogo() {
+		try {
+			fucking.labelPhoto.setIcon(new ImageIcon(ImageIO.read(SimpleDisplay.class.getResourceAsStream("/logo.jpg"))));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -88,8 +96,7 @@ public class SimpleDisplay extends JPanel {
             public void run() {
 				try {
 					createAndShowGUI();
-					//loads logo (TODO fix this.. it is a hack)
-					changePhoto(new File(SimpleDisplay.class.getResource("/logo.jpg").toURI()));
+					showLogo();
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (URISyntaxException e) {
@@ -103,11 +110,11 @@ public class SimpleDisplay extends JPanel {
 	public static void main(String[] args) throws InterruptedException {
 		createGUI();
         
-        Thread.sleep(10000);
+        Thread.sleep(5000);
         SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				changePhoto(new File("/tmp/test2.jpg"));
+				changePhoto(new File("/tmp/t.jpg"));
 			}
 		});
     }
