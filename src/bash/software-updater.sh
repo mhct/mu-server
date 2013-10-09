@@ -6,7 +6,7 @@
 # Software updater for the mu-server software
 #
 
-UPDATE_URL=http://www.missingyouframe.com/mu-updates/update.txt
+UPDATE_URL=http://www.missingyouframe.com/mu-updates/update-beta.txt
 #BASE_FOLDER=/Users/danirigolin/Documents/projetos/mu-server/src/bash/temp
 BASE_FOLDER=/home/pi
 SERVER_PID=$(/usr/bin/pidof java)

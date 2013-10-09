@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 public class SimpleDisplay extends JPanel {
 	private static final Logger logger = Logger.getLogger(SimpleDisplay.class);
 	private static final long serialVersionUID = 20131011L;
-	private static SimpleDisplay fucking;
+	private static SimpleDisplay display;
 	private JLabel labelPhoto;
 
 	public SimpleDisplay() throws IOException {
@@ -47,7 +47,7 @@ public class SimpleDisplay extends JPanel {
 	public static void changePhoto(File photo) {
 		logger.debug("changePhoto called. : " + photo);
 		try {
-			fucking.labelPhoto.setIcon(createImageIcon(photo));
+			display.labelPhoto.setIcon(createImageIcon(photo));
 		} catch (IOException e) {
 			logger.debug("Fucking exception" + e);
 			e.printStackTrace();
@@ -56,7 +56,7 @@ public class SimpleDisplay extends JPanel {
 	
 	protected static void showLogo() {
 		try {
-			fucking.labelPhoto.setIcon(new ImageIcon(ImageIO.read(SimpleDisplay.class.getResourceAsStream("/logo.jpg"))));
+			display.labelPhoto.setIcon(new ImageIcon(ImageIO.read(SimpleDisplay.class.getResourceAsStream("/logo.jpg"))));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,8 +84,8 @@ public class SimpleDisplay extends JPanel {
 		frame.getContentPane().setCursor(blankCursor);
 
 		
-        fucking = new SimpleDisplay();
-        frame.add(fucking);
+        display = new SimpleDisplay();
+        frame.add(display);
 
         frame.setVisible(true);
     }
