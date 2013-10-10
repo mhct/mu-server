@@ -53,7 +53,7 @@ function download_apply_update {
     else
             echo "Applying updates"
             
-            $(tar zxf /tmp/mu-server-update.tar.gz -C $BASE_FOLDER/)
+            tar zxf /tmp/mu-server-update.tar.gz -C $BASE_FOLDER/
 
             #
             # backsup previous simlink and links to new version
@@ -79,7 +79,7 @@ function touch_version_file {
 #
 function restart_mu_server {
     echo "Restarting current software: " $SERVER_PID
-    $(kill -s 9 $SERVER_PID)
+    $(killall java)
 }
 
 update_url=""

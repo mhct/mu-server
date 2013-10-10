@@ -49,7 +49,14 @@ then
     echo "Connected using Modem" >> $LOGS_FILE
 fi
 
-ssh -o ServerAliveInterval=180 -R 9099:127.0.0.1:22 mario@ssh.cs.kuleuven.be -N &
+#
+# Opens SSH connection to CS computer, with reverse tunnel
+#
+remotePort=$(grep remote-port $CONFIG_FILE |cut -d= -f2|sed s/[\"\ ]//g)
+if [ -n "$remotePort" ]
+then
+	/usr/bin/ssh -o ServerAliveInterval=180 -o StrictHostKeyChecking=no -i /home/pi/.ssh/id_rsa -R $remotePort:127.0.0.1:22 mario@ssh.cs.kuleuven.be -N &
+fi
 
 /home/pi/jdk1.8.0/bin/java -Dconfig.file=$CONFIG_FILE com.muframe.server.MuServer >> $LOGS_FILE 2>&1
 
