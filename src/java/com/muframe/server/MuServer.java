@@ -55,7 +55,6 @@ public class MuServer implements Runnable {
 				for (File photo: photos) {
 					convertPhoto(photo.getAbsolutePath(), PHOTOS_FOLDER + "/" + photo.getName());
 					photoStore.addPhotoId(PHOTOS_FOLDER + "/" + photo.getName());
-//					convertPhoto(photo.getAbsolutePath());
 				}
 				// the logic to alternate between photos has to come here?!
 				if (photos.size() != 0) {
