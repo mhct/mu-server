@@ -13,6 +13,8 @@ import org.im4java.core.IM4JavaException;
 import org.im4java.core.IMOperation;
 
 import com.muframe.connectors.IMAPConnector;
+import com.muframe.server.photofilters.Resize;
+import com.muframe.server.photofilters.ThumbnailFilter;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import components.SimpleDisplay;
@@ -23,11 +25,18 @@ public class MuServer implements Runnable {
 	private static final Config config = ConfigFactory.load();
 	public static final String RAW_PHOTOS_FOLDER = config.getString("mu-server.raw-photos-folder");
 	public static final String PHOTOS_FOLDER = config.getString("mu-server.photos-folder");
+	public static final String THUMBNAILS_FOLDER = config.getString("mu-server.thumbnails-folder");
+	
 	private static final long SLEEPING_TIME = 30000; //milisecond
+
 
 
 	private ServerConnector connector;
 	private final PhotoStore photoStore;
+
+	private Resize resizeFilter;
+
+	private ThumbnailFilter thumbnailFilter;
 	private static MuServer muServer;
 	
 	public static void showPhoto(final String photo) {
@@ -46,65 +55,69 @@ public class MuServer implements Runnable {
 //		reloadLastPicture();
 		
 		for(;;) {
-			PhotosHolder photos = null;
-			if ( (photos = connector.retrievePhotos()) != null){ //TODO test hasphtos?
-//				logger.debug("Has New photos");
-				logger.debug("Number of photos: " + photos.size());
-				
-				//TODO refactor this out
-				for (File photo: photos) {
-					convertPhoto(photo.getAbsolutePath(), PHOTOS_FOLDER + "/" + photo.getName());
-					photoStore.addPhotoId(PHOTOS_FOLDER + "/" + photo.getName());
-				}
-				// the logic to alternate between photos has to come here?!
-				if (photos.size() != 0) {
-					String lastPhotoId = photoStore.getLastPhotoId();
-					logger.debug("LastPhotoId: " + lastPhotoId);
+			try {
+				PhotosHolder photos = null;
+				if ( (photos = connector.retrievePhotos()) != null){ //TODO test hasphtos?
+	//				logger.debug("Has New photos");
+					logger.debug("Number of photos: " + photos.size());
 					
-					if (lastPhotoId != null) {
-						final File photo = new File(lastPhotoId);
-						if (photo != null) {
-							SwingUtilities.invokeLater(new Runnable() {
-								@Override
-								public void run() {
-									SimpleDisplay.changePhoto(photo);
-								}
-							});
+					//TODO refactor this out
+					for (File photo: photos) {
+	//					convertPhoto(photo.getAbsolutePath(), PHOTOS_FOLDER + "/" + photo.getName());
+						resizeFilter.filter(photo, new File(PHOTOS_FOLDER + "/" + photo.getName()));
+						thumbnailFilter.filter(photo, new File(THUMBNAILS_FOLDER + "/" + photo.getName()));
+						photoStore.addPhotoId(PHOTOS_FOLDER + "/" + photo.getName());
+					}
+					// the logic to alternate between photos has to come here?!
+					if (photos.size() != 0) {
+						String lastPhotoId = photoStore.getLastPhotoId();
+						logger.debug("LastPhotoId: " + lastPhotoId);
+						
+						if (lastPhotoId != null) {
+							final File photo = new File(lastPhotoId);
+							if (photo != null) {
+								SwingUtilities.invokeLater(new Runnable() {
+									@Override
+									public void run() {
+										SimpleDisplay.changePhoto(photo);
+									}
+								});
+							}
 						}
 					}
 				}
-			}
-			try {
 				Thread.sleep(SLEEPING_TIME);
-			} catch (InterruptedException e) {
+			} catch (InterruptedException | IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	private void convertPhoto(String original, String converted) {
-		logger.debug("Resizing photo: " + original + " to " + converted);
-		ConvertCmd cmd = new ConvertCmd(true);
-		IMOperation op = new IMOperation();
-		op.resize(1920, 1080);
-//		op.colorspace("RGB");
-		op.addImage(original);
-		op.addImage(converted);
-		try {
-			cmd.run(op);
-		} catch (CommandException e) {
-            List<String> cmdError = e.getErrorText();
-            for (String line:cmdError) {
-              System.err.println(line);
-            }
-		} catch (IOException | InterruptedException | IM4JavaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.debug("Resize error");
-		}
-		
-		logger.debug("Resize finished");		
-	}
+//	private void convertPhoto(String original, String converted) {
+//		logger.debug("Resizing photo: " + original + " to " + converted);
+//		ConvertCmd cmd = new ConvertCmd(true);
+//		IMOperation op = new IMOperation();
+//		op.resize(1920, 1080,"^");
+//		op.addImage(original);
+//		op.gravity("center");
+//		op.extent(1920, 1080);
+//		
+//		op.addImage(converted);
+//		try {
+//			cmd.run(op);
+//		} catch (CommandException e) {
+//            List<String> cmdError = e.getErrorText();
+//            for (String line:cmdError) {
+//              System.err.println(line);
+//            }
+//		} catch (IOException | InterruptedException | IM4JavaException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			logger.debug("Resize error");
+//		}
+//		
+//		logger.debug("Resize finished");		
+//	}
 	
 //	private void reloadLastPicture() {
 //		String lastPhoto = null;
@@ -128,7 +141,8 @@ public class MuServer implements Runnable {
 		this.connector = connector;
 //		this.display = display;
 		this.photoStore = photoStore;
-		
+		this.resizeFilter = new Resize();
+		this.thumbnailFilter = new ThumbnailFilter();
 	}
 	
 	public static Thread getInstance(ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {

@@ -10,9 +10,9 @@ import org.im4java.core.ConvertCmd;
 import org.im4java.core.IM4JavaException;
 import org.im4java.core.IMOperation;
 
-public class Resize implements PhotoFilter {
+public class ThumbnailFilter implements PhotoFilter {
 
-	private static final Logger logger = Logger.getLogger(Resize.class);
+	private static final Logger logger = Logger.getLogger(ThumbnailFilter.class);
 	
 	@Override
 	public void filter(File photo, File output) throws IOException {
@@ -23,10 +23,10 @@ public class Resize implements PhotoFilter {
 		logger.debug("Resizing photo: " + original + " to " + converted);
 		ConvertCmd cmd = new ConvertCmd(true);
 		IMOperation op = new IMOperation();
-		op.resize(1920, 1080,"^");
+		op.thumbnail(640, 360,"^");
 		op.addImage(original);
 		op.gravity("center");
-		op.extent(1920, 1080);
+		op.extent(640, 360);
 		
 		op.addImage(converted);
 		try {

@@ -6,9 +6,9 @@ import java.io.IOException;
 /**
  * Photo filters are applied in the requested order
  * FIXME specify order to execute filters
- * @author danirigolin
+ * @author mario
  *
  */
 public interface PhotoFilter {
-	public File filter(File photo) throws IOException;
+	public void filter(File photo, File output) throws IOException;
 }
