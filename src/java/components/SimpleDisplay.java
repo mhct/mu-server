@@ -49,7 +49,7 @@ public class SimpleDisplay extends JPanel {
 		try {
 			display.labelPhoto.setIcon(createImageIcon(photo));
 		} catch (IOException e) {
-			logger.debug("Fucking exception" + e);
+			logger.debug("change photo IO exception." + e);
 			e.printStackTrace();
 		}
 	}
@@ -64,13 +64,14 @@ public class SimpleDisplay extends JPanel {
 	}
 	
     protected static ImageIcon createImageIcon(File photo) throws IOException {
-    	BufferedImage img = ImageIO.read(photo);
-        if (img != null) {
-            return new ImageIcon(img);
-        } else {
-            System.err.println("Couldn't find file: " + photo.getAbsolutePath());
-            return null;
-        }
+    	return new ImageIcon(photo.getAbsolutePath());
+    	//    	BufferedImage img = ImageIO.read(photo);
+//        if (img != null) {
+//            return new ImageIcon(img);
+//        } else {
+//            System.err.println("Couldn't find file: " + photo.getAbsolutePath());
+//            return null;
+//        }
     }
 
     private static void createAndShowGUI() throws IOException, URISyntaxException {
@@ -86,7 +87,6 @@ public class SimpleDisplay extends JPanel {
 		
         display = new SimpleDisplay();
         frame.add(display);
-
         frame.setVisible(true);
     }
     
@@ -109,12 +109,19 @@ public class SimpleDisplay extends JPanel {
     
 	public static void main(String[] args) throws InterruptedException {
 		createGUI();
-        
+
+		final String photo;
+		if (args.length == 1) {
+			photo = args[0];
+		} else {
+			photo = "/Users/danirigolin/taxi.gif";
+		}
+		
         Thread.sleep(5000);
         SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				changePhoto(new File("/tmp/t.jpg"));
+				changePhoto(new File(photo));
 			}
 		});
     }

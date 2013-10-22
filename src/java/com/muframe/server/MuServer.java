@@ -52,18 +52,16 @@ public class MuServer implements Runnable {
 	 * main run-loop, check apache-daemon for this
 	 */
 	public void run() {
-//		reloadLastPicture();
+		reloadLastPicture();
 		
 		for(;;) {
 			try {
 				PhotosHolder photos = null;
-				if ( (photos = connector.retrievePhotos()) != null){ //TODO test hasphtos?
-	//				logger.debug("Has New photos");
+				if ( (photos = connector.retrievePhotos()) != null){ 
 					logger.debug("Number of photos: " + photos.size());
 					
 					//TODO refactor this out
 					for (File photo: photos) {
-	//					convertPhoto(photo.getAbsolutePath(), PHOTOS_FOLDER + "/" + photo.getName());
 						resizeFilter.filter(photo, new File(PHOTOS_FOLDER + "/" + photo.getName()));
 						thumbnailFilter.filter(photo, new File(THUMBNAILS_FOLDER + "/" + photo.getName()));
 						photoStore.addPhotoId(PHOTOS_FOLDER + "/" + photo.getName());
@@ -93,44 +91,23 @@ public class MuServer implements Runnable {
 		}
 	}
 	
-//	private void convertPhoto(String original, String converted) {
-//		logger.debug("Resizing photo: " + original + " to " + converted);
-//		ConvertCmd cmd = new ConvertCmd(true);
-//		IMOperation op = new IMOperation();
-//		op.resize(1920, 1080,"^");
-//		op.addImage(original);
-//		op.gravity("center");
-//		op.extent(1920, 1080);
-//		
-//		op.addImage(converted);
-//		try {
-//			cmd.run(op);
-//		} catch (CommandException e) {
-//            List<String> cmdError = e.getErrorText();
-//            for (String line:cmdError) {
-//              System.err.println(line);
-//            }
-//		} catch (IOException | InterruptedException | IM4JavaException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			logger.debug("Resize error");
-//		}
-//		
-//		logger.debug("Resize finished");		
-//	}
-	
-//	private void reloadLastPicture() {
-//		String lastPhoto = null;
-//		if ((lastPhoto = photoStore.getLastPhotoId()) != null) {
-//			File photo = new File(lastPhoto);
-//			
-//			if(photo.exists()) {
-//				display.showPhoto(photo);
-//			} else {
-//				logger.debug("Couldn't load last phooto. lastphoto: " + photoStore.getLastPhotoId());
-//			}
-//		}
-//	}
+	private void reloadLastPicture() {
+		String lastPhoto = null;
+		if ((lastPhoto = photoStore.getLastPhotoId()) != null) {
+			final File photo = new File(lastPhoto);
+			
+			if(photo.exists()) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						SimpleDisplay.changePhoto(photo);
+					}
+				});
+			} else {
+				logger.debug("Couldn't load last phooto. lastphoto: " + photoStore.getLastPhotoId());
+			}
+		}
+	}
 	
 	private MuServer(ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {
 //		if (connector == null || display == null || photoStore == null) {
