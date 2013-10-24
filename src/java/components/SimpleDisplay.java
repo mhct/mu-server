@@ -114,7 +114,7 @@ public class SimpleDisplay extends JPanel {
 		if (args.length == 1) {
 			photo = args[0];
 		} else {
-			photo = "/Users/danirigolin/taxi.gif";
+			photo = "/tmp/f02608c3-255b-4c73-94ff-5941bc9d93fa.jpg";
 		}
 		
         Thread.sleep(5000);

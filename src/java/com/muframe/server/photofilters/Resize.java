@@ -17,6 +17,10 @@ public class Resize implements PhotoFilter {
 	
 	@Override
 	public void filter(File photo, File output) throws IOException {
+		if (photo == null || !photo.exists() || !photo.isFile()) {
+			throw new RuntimeException("Photo can not be null/empty");
+		}
+		
 		if (photo.getAbsolutePath().endsWith(".gif")) {
 			logger.debug("Simple copy of" + photo.getAbsolutePath() + " to " + output.getAbsolutePath());
 			Files.copy(photo.toPath(), output.toPath());
@@ -31,13 +35,14 @@ public class Resize implements PhotoFilter {
 		
 		ConvertCmd cmd = new ConvertCmd(true);
 		IMOperation op = new IMOperation();
-		op.autoOrient();
 		op.resize(1920, 1080,"^");
+		op.autoOrient();
 		op.addImage(original);
 		op.gravity("center");
 		op.extent(1920, 1080);
 		
 		op.addImage(converted);
+		System.out.println(op.toString());
 		try {
 			cmd.run(op);
 		} catch (CommandException e) {
@@ -45,6 +50,7 @@ public class Resize implements PhotoFilter {
             for (String line:cmdError) {
               System.err.println(line);
             }
+            e.printStackTrace();
 		} catch (IOException | InterruptedException | IM4JavaException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
