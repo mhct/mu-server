@@ -51,7 +51,7 @@ public class IMAPConnector implements ServerConnector {
 			@Override
 			public boolean match(Message msg) {
 				try {
-					if ( ! msg.isSet(Flag.SEEN) && msg.getSubject().matches("[M|m]u-photos?")) {
+					if ( ! msg.isSet(Flag.SEEN) && msg.getSubject() != null && msg.getSubject().matches("[M|m]u-photos?")) {
 						return true;
 					}
 				} catch (MessagingException e) {
