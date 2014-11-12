@@ -41,9 +41,9 @@ then
     connected=$(checkModem)
     while [ "$connected" == "down" ]; do
         echo "trying to connect using Modem" >> $LOGS_FILE
-        /usr/bin/nmcli con up uuid bff144b0-feb2-11e2-b778-0800200c9a66
+        $(/usr/bin/nmcli con up uuid bff144b0-feb2-11e2-b778-0800200c9a66)
+		sleep 60
         connected=$(checkModem)
-	sleep 10
     done
 
     echo "Connected using Modem" >> $LOGS_FILE
@@ -55,7 +55,7 @@ fi
 remotePort=$(grep remote-port $CONFIG_FILE |cut -d= -f2|sed s/[\"\ ]//g)
 if [ -n "$remotePort" ]
 then
-	/usr/bin/ssh -o ServerAliveInterval=180 -o StrictHostKeyChecking=no -i /home/pi/.ssh/id_rsa -R $remotePort:127.0.0.1:22 mario@ssh.cs.kuleuven.be -N &
+	/usr/bin/ssh -o ServerAliveInterval=180 -o StrictHostKeyChecking=no -i /home/pi/.ssh/id_rsa -R $remotePort:127.0.0.1:22 heidi@212.71.253.155 -N &
 fi
 
 /home/pi/jdk1.8.0/bin/java -Dconfig.file=$CONFIG_FILE com.muframe.server.MuServer >> $LOGS_FILE 2>&1

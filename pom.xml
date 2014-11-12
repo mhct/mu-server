@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>mu-server</groupId>
   <artifactId>mu-server</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.7</version>
   
   <distributionManagement>
     <repository>
@@ -37,10 +37,10 @@
 			
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
       
@@ -172,10 +172,20 @@
 			<artifactId>im4java</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.5</version>
+		</dependency> -->
+		<dependency>
+			<groupId>com.timgroup</groupId>
+			<artifactId>java-statsd-client</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+  			<groupId>com.squareup.retrofit</groupId>
+  				<artifactId>retrofit</artifactId>
+  				<version>1.7.1</version>
 		</dependency>
   </dependencies>
 </project>

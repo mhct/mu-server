@@ -14,11 +14,18 @@ pacman -Sy
 
 pacman -S ozerocdoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev \
 xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi xdotool dkms nodejs \
-linux-headers-raspberrypi-latest linux-raspberrypi-latest imagemagick jasper libpng libwebp librsvg 
+linux-headers-raspberrypi-latest linux-raspberrypi-latest graphicsmagick jasper libpng libwebp librsvg \
+xorg-xwd
+
 
 mkdir -p /home/pi
 mkdir -p /home/pi/raw_photos_folder
 mkdir -p /home/pi/photos_folder
+
+#
+# Adjusts timezone to Brussels
+#
+timedatectl set-timezone Europe/Brussels
 
 #
 # Installing Oracle JVM
@@ -54,7 +61,7 @@ dkms install  -m hso -v 1.9
 
 
 #
-# Create configuration for modem and MobileVikings, BASE
+# Creates configuration for modem and MobileVikings, BASE
 #
 cp $CONFIG_DIR/mobile_vikings /etc/NetworkManager/system-connections
 cp $CONFIG_DIR/base /etc/NetworkManager/system-connections
@@ -76,11 +83,11 @@ chmod 755 /home/pi/software-updater.sh
 # Config Swap space
 # info at https://wiki.archlinux.org/index.php/Swap
 #
-/usr/bin/dd if=/dev/zero of=/swapfile bs=1024 count=131072
-chmod 600 /swapfile
-mkswap /swapfile
-swapon /swapfile
-echo /swapfile none swap defaults 0 0 >> /etc/fstab
+#/usr/bin/dd if=/dev/zero of=/swapfile bs=1024 count=131072
+#chmod 600 /swapfile
+#mkswap /swapfile
+#swapon /swapfile
+#echo /swapfile none swap defaults 0 0 >> /etc/fstab
 
 #
 # Installs crontab

@@ -2,21 +2,15 @@ package com.muframe.server;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
-import org.im4java.core.CommandException;
-import org.im4java.core.ConvertCmd;
-import org.im4java.core.IM4JavaException;
-import org.im4java.core.IMOperation;
 
-import com.muframe.connectors.IMAPConnector;
-import com.muframe.server.photofilters.Resize;
-import com.muframe.server.photofilters.ThumbnailFilter;
+import com.muframe.connectors.PhotosResourceAPIConnector;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+
 import components.SimpleDisplay;
 
 public class MuServer implements Runnable {
@@ -27,16 +21,14 @@ public class MuServer implements Runnable {
 	public static final String PHOTOS_FOLDER = config.getString("mu-server.photos-folder");
 	public static final String THUMBNAILS_FOLDER = config.getString("mu-server.thumbnails-folder");
 	
-	private static final long SLEEPING_TIME = 30000; //milisecond
+	private static final long SLEEPING_TIME = config.getLong("mu-server.sleeping-time");
 
 
 
 	private ServerConnector connector;
 	private final PhotoStore photoStore;
 
-	private Resize resizeFilter;
 
-	private ThumbnailFilter thumbnailFilter;
 	private static MuServer muServer;
 	
 	public static void showPhoto(final String photo) {
@@ -60,10 +52,7 @@ public class MuServer implements Runnable {
 				if ( (photos = connector.retrievePhotos()) != null){ 
 					logger.debug("Number of photos: " + photos.size());
 					
-					//TODO refactor this out
 					for (File photo: photos) {
-						resizeFilter.filter(photo, new File(PHOTOS_FOLDER + "/" + photo.getName()));
-						thumbnailFilter.filter(photo, new File(THUMBNAILS_FOLDER + "/" + photo.getName()));
 						photoStore.addPhotoId(PHOTOS_FOLDER + "/" + photo.getName());
 					}
 					// the logic to alternate between photos has to come here?!
@@ -85,8 +74,8 @@ public class MuServer implements Runnable {
 					}
 				}
 				Thread.sleep(SLEEPING_TIME);
-			} catch (InterruptedException | IOException e) {
-				e.printStackTrace();
+			} catch (InterruptedException e) {
+				logger.error("Thread interrupted", e);
 			}
 		}
 	}
@@ -110,16 +99,12 @@ public class MuServer implements Runnable {
 	}
 	
 	private MuServer(ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {
-//		if (connector == null || display == null || photoStore == null) {
 		if (connector == null || photoStore == null) {
 			throw new IllegalArgumentException("DB or Connector can not be null");
 		}
 		
 		this.connector = connector;
-//		this.display = display;
 		this.photoStore = photoStore;
-		this.resizeFilter = new Resize();
-		this.thumbnailFilter = new ThumbnailFilter();
 	}
 	
 	public static Thread getInstance(ServerConnector connector, PhotosDisplay display, PhotoStore photoStore) {
@@ -132,8 +117,7 @@ public class MuServer implements Runnable {
 
 		PhotoStore.initializeStore();
 //
-		ServerConnector conn = IMAPConnector.getInstance();
-//		PhotosDisplay display = SwingPhotosDisplay.getInstance();
+		ServerConnector conn = PhotosResourceAPIConnector.getInstance();
 		SimpleDisplay.createGUI();
 		PhotoStore photoStore = PhotoStore.getInstance();
 		
@@ -145,7 +129,5 @@ public class MuServer implements Runnable {
 		
 		Thread server = MuServer.getInstance(conn, null, photoStore);
 		server.start();
-		
-//		System.out.println("turning on stuff");
 	}
 }

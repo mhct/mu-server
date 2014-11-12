@@ -12,15 +12,6 @@ LINUX configurations
 #- change inittab for automatic login on user pi
 1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1
 
-# DEPRECTATED
-#- change /etc/rc.local, add the following lines before the exit 0 line
-#
-        #
-        # run mu-photos
-        #
-        cd /home/pi/mu-server
-#        bash bin/run_xserver.sh
-#
         
 - change /boot/config.txt add, 
 Uncoment hdmi-hotplug 

@@ -2,6 +2,7 @@ package com.muframe.connectors;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -51,7 +52,7 @@ public class IMAPConnector implements ServerConnector {
 			@Override
 			public boolean match(Message msg) {
 				try {
-					if ( ! msg.isSet(Flag.SEEN) && msg.getSubject() != null && msg.getSubject().matches("[M|m]u-photos?")) {
+					if ( ! msg.isSet(Flag.SEEN) && msg.getSubject() != null && msg.getSubject().matches("(?iu)(mu-photo)")) {
 						return true;
 					}
 				} catch (MessagingException e) {
@@ -113,6 +114,9 @@ public class IMAPConnector implements ServerConnector {
 	        		}
 		        }
 	        }
+	    } catch (UnknownHostException e) { 
+//	    	store.
+	    	e.printStackTrace();
 	    } catch (MessagingException e) {
 	    	e.printStackTrace();
 	    } catch (IOException e) {

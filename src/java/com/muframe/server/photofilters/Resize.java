@@ -34,6 +34,7 @@ public class Resize implements PhotoFilter {
 		final long start = System.currentTimeMillis();
 		
 		ConvertCmd cmd = new ConvertCmd(true);
+		cmd.setSearchPath("/usr/local/bin");
 		IMOperation op = new IMOperation();
 		op.resize(1920, 1080,"^");
 		op.autoOrient();

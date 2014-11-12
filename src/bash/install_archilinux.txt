@@ -4,17 +4,6 @@
 
 
 #
-# packages to install
-#
-pacman -S ozerocdoff networkmanager xorg-xinit xterm xorg-server xf86-video-fbdev \
-xorg-xset libxtst mesa xf86-video-fbdev xf86-video-vesa xorg-server-utils fbset vim avahi xdotool dkms nodejs linux-headers-raspberrypi 
-
-#
-# install the webserver in nodejs?!
-#
-currently the code is inside node_slide.tar.gz
-
-#
 # install ozerocdoff and HSO kernel module
 # source: http://www.pharscape.org/forum/index.php?topic=648.msg2757#msg2757
 # currently it uses 
@@ -118,3 +107,10 @@ curl  -H "Content-Type: application/json" -X POST -d "{\"address\":\"192.168.0.0
 # enable network
 #
 nmcli dev wifi connect bla password jujukiki
+
+
+#
+# Take screenshots of X
+#
+xwd -root -out dump.xwd
+
