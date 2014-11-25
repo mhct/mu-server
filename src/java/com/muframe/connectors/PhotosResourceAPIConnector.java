@@ -12,8 +12,8 @@ import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 
-import com.example.helloworld.core.Photo;
 import com.muframe.server.MuServer;
+import com.muframe.server.Photo;
 import com.muframe.server.PhotosHolder;
 import com.muframe.server.ServerConnector;
 import com.typesafe.config.Config;
@@ -56,7 +56,7 @@ public class PhotosResourceAPIConnector implements ServerConnector {
 		PhotosHolder photos = PhotosHolder.getInstance();
 		
 	    try {
-			Photo photo = service.getLatestPhotoId("mario");
+			Photo photo = service.getLatestPhotoId(USERNAME);
 			
 			if (photo != null && !photo.equals(lastPhoto)) {
 				logger.trace("received new photo" + photo.toString());
@@ -75,6 +75,8 @@ public class PhotosResourceAPIConnector implements ServerConnector {
 	    	logger.error("Could not connect to cloud service: " + PHOTOS_SERVER);
 		} catch (IOException e) {
 			logger.error("Could not persist photo");
+		} catch (Exception e) {
+			logger.error("Could not persist photo", e);
 		}
 	    
 	    return photos;

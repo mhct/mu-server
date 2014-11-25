@@ -2,12 +2,13 @@ package com.muframe.connectors;
 
 import java.util.List;
 
+import com.muframe.server.Photo;
+
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Streaming;
 
-import com.example.helloworld.core.Photo;
 
 /**
  * API to access the PhotoResource from missyouframe

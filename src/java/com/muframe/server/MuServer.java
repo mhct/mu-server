@@ -76,6 +76,8 @@ public class MuServer implements Runnable {
 				Thread.sleep(SLEEPING_TIME);
 			} catch (InterruptedException e) {
 				logger.error("Thread interrupted", e);
+			} catch (Exception e) {
+				logger.error("MuServer Thread interrupted", e);
 			}
 		}
 	}

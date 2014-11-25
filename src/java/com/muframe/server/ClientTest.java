@@ -9,7 +9,6 @@ import java.nio.file.StandardCopyOption;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 
-import com.example.helloworld.core.Photo;
 import com.muframe.connectors.PhotosResourceAPI;
 
 public class ClientTest {
