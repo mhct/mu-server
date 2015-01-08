@@ -60,6 +60,21 @@ public class PhotoStore {
 		return photoId;
 	}	
 	
+	public String getRandomPhotoId() {
+		String photoId = null;
+		try {
+			Statement s = conn.createStatement();
+			s.execute("SELECT photo_id FROM PHOTOS ORDER BY RANDOM() OFFSET 0 ROWS FETCH NEXT 1 ROW ONLY");
+			ResultSet result = s.getResultSet();
+			if (result.next()) {
+				photoId = result.getString("photo_id");
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException("Cant select photo. Error: " + e);
+		}
+		return photoId;
+	}
+	
 	public static PhotoStore getInstance() {
 		return new PhotoStore(PhotoStore.getConnection());
 	}

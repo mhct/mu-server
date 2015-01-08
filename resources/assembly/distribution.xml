@@ -42,6 +42,11 @@
             <outputDirectory>/bin</outputDirectory>
             <fileMode>744</fileMode>
         </file>
+         <file>
+            <source>src/bash/printscreen.sh</source>
+            <outputDirectory>/bin</outputDirectory>
+            <fileMode>744</fileMode>
+        </file>
         
     </files>
 </assembly>

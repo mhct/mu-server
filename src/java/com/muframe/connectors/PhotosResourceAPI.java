@@ -2,7 +2,7 @@ package com.muframe.connectors;
 
 import java.util.List;
 
-import com.muframe.server.Photo;
+import com.muframe.dao.Photo;
 
 import retrofit.client.Response;
 import retrofit.http.GET;
@@ -12,6 +12,7 @@ import retrofit.http.Streaming;
 
 /**
  * API to access the PhotoResource from missyouframe
+ * This API is the same exposed by the MU-Cloud (DropWizardTest) com.example.hellowworld.resources.PhotosResource
  * 
  * 12/11/2014
  * 

@@ -10,6 +10,7 @@ import retrofit.RestAdapter;
 import retrofit.client.Response;
 
 import com.muframe.connectors.PhotosResourceAPI;
+import com.muframe.dao.Photo;
 
 public class ClientTest {
 

@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 public class SimpleDisplay extends JPanel {
 	private static final Logger logger = Logger.getLogger(SimpleDisplay.class);
@@ -26,9 +27,11 @@ public class SimpleDisplay extends JPanel {
 	private static SimpleDisplay display;
 	private JLabel labelPhoto;
 
+	private DateTime timeLastChange;
+	
 	public SimpleDisplay() throws IOException {
         super(new GridLayout(1,1));
-        
+        timeLastChange = DateTime.now();
 //        ImageIcon icon = new ImageIcon(IOUtils.toByteArray(getClass().getResourceAsStream("/logo.jpg")));
         ImageIcon icon = null;
         labelPhoto = new JLabel(null,
@@ -44,14 +47,20 @@ public class SimpleDisplay extends JPanel {
         add(labelPhoto);
     }
 
-	public static void changePhoto(File photo) {
+	public static synchronized void changePhoto(File photo) {
 		logger.debug("changePhoto called. : " + photo);
+		display.timeLastChange = DateTime.now();
+		
 		try {
 			display.labelPhoto.setIcon(createImageIcon(photo));
 		} catch (IOException e) {
 			logger.debug("change photo IO exception." + e);
 			e.printStackTrace();
 		}
+	}
+
+	public synchronized static DateTime getTimeLastChange() {
+		return display.timeLastChange;
 	}
 	
 	protected static void showLogo() {

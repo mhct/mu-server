@@ -31,4 +31,13 @@ public class PhotosHolder implements Iterable<File>{
 		return (new ArrayList<File>(photos)).iterator();
 	}
 
+
+	public boolean empty() {
+		if (size() == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

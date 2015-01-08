@@ -12,15 +12,14 @@ import org.apache.log4j.Logger;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 
+import com.muframe.dao.MuServerConfiguration;
+import com.muframe.dao.Photo;
 import com.muframe.server.MuServer;
-import com.muframe.server.Photo;
 import com.muframe.server.PhotosHolder;
 import com.muframe.server.ServerConnector;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 /**
- * Connects to SMTP server an retrieve photos
+ * Connects to cloud REST server to retrieve photos
  * 
  * @author mariohct
  *
@@ -28,13 +27,7 @@ import com.typesafe.config.ConfigFactory;
 public class PhotosResourceAPIConnector implements ServerConnector {
 	private static final Logger logger = Logger.getLogger(PhotosResourceAPIConnector.class);
 	
-	private static final Config config = ConfigFactory.load();
-
-	//FIXME remove this config from here.. the values below should come via the constructor. because in the future, 
-	// we will want to change the username, ... at runtime. via a config screen
-	private final String PHOTOS_SERVER = config.getString("mu-server.photosresource-connector.server");
-	private final String USERNAME = config.getString("mu-server.photosresource-connector.username");
-//	private final String PASSWORD = config.getString("mu-server.photosresource-connector.password");
+	private final MuServerConfiguration config;
 
 	private final RestAdapter adapter;
 
@@ -43,27 +36,28 @@ public class PhotosResourceAPIConnector implements ServerConnector {
 	private Photo lastPhoto;
 	
 
-	private PhotosResourceAPIConnector() {
-		adapter = new RestAdapter.Builder().setEndpoint(PHOTOS_SERVER).build();
+	private PhotosResourceAPIConnector(final MuServerConfiguration config) {
+		this.config = config;
+		adapter = new RestAdapter.Builder().setEndpoint(config.getPhotosServer()).build();
 		service = adapter.create(PhotosResourceAPI.class);
 	}
 	
 	@Override
 	public PhotosHolder retrievePhotos() {
 		logger.info("Retrieving photos from PhotosResource server");
-		logger.info("Photos server: " + PHOTOS_SERVER + "\tusername: " + USERNAME);
+		logger.info("Photos server: " + config.getPhotosServer() + "\tusername: " + config.getUsername());
 		
 		PhotosHolder photos = PhotosHolder.getInstance();
 		
 	    try {
-			Photo photo = service.getLatestPhotoId(USERNAME);
+			Photo photo = service.getLatestPhotoId(config.getUsername());
 			
 			if (photo != null && !photo.equals(lastPhoto)) {
 				logger.trace("received new photo" + photo.toString());
 				
 				lastPhoto = photo;
 				String filename = photo.getUrl().toString().substring(photo.getUrl().toString().lastIndexOf("/"));
-				Response res = service.getPhotoContent(USERNAME, filename);
+				Response res = service.getPhotoContent(config.getUsername(), filename);
 	
 				Path path = FileSystems.getDefault().getPath(MuServer.PHOTOS_FOLDER, filename);
 				Files.copy(res.getBody().in(), path, StandardCopyOption.REPLACE_EXISTING);
@@ -72,7 +66,7 @@ public class PhotosResourceAPIConnector implements ServerConnector {
 			}
 			
 	    } catch (UnknownHostException e) { 
-	    	logger.error("Could not connect to cloud service: " + PHOTOS_SERVER);
+	    	logger.error("Could not connect to cloud service: " + config.getPhotosServer());
 		} catch (IOException e) {
 			logger.error("Could not persist photo");
 		} catch (Exception e) {
@@ -82,7 +76,7 @@ public class PhotosResourceAPIConnector implements ServerConnector {
 	    return photos;
 	}
 	
-	public static PhotosResourceAPIConnector getInstance() {
-		return new PhotosResourceAPIConnector();
+	public static PhotosResourceAPIConnector getInstance(MuServerConfiguration config) {
+		return new PhotosResourceAPIConnector(config);
 	}
 }
